@@ -8481,8 +8481,12 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
 
     if (ctx->randomFactor)
     {
-        dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, DMG_ROLL_PERCENT_HI - DMG_ROLL_PERCENT_LO);
-        dmg /= 100;
+        moveAcc = GetMoveAccuracy(ctx->move);
+        //dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, DMG_ROLL_PERCENT_HI - DMG_ROLL_PERCENT_LO);
+        dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, (DMG_ROLL_PERCENT_HI - moveAcc)*2); // New roll system, only for previously innacurate move
+        //dmg /= 100;
+        dmg *= 925; //These two next lines are here to replace the old roll system with a mid roll for balance purpose
+        dmg /= (1000*100);
     }
     else // Apply rest of modifiers in the ai function
     {
