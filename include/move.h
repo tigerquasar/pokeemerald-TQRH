@@ -98,10 +98,16 @@ struct MoveInfo
     bool32 windMove:1;
     bool32 slicingMove:1;
     bool32 healingMove:1;
+    bool32 kickingMove:1;
+    bool32 slamingMove:1;
+    bool32 whippingMove:1;
+    // end of word (I suppose)
+    bool32 beamMove:1;
+    bool32 piercingMove:1;
+    bool32 lightMove:1;
     bool32 minimizeDoubleDamage:1;
     bool32 ignoresTargetAbility:1;
     bool32 ignoresTargetDefenseEvasionStages:1;
-    // end of word
     bool32 damagesUnderground:1;
     bool32 damagesUnderwater:1;
     bool32 damagesAirborne:1;
@@ -131,7 +137,7 @@ struct MoveInfo
     bool32 dampBanned:1;
     //Other
     bool32 validApprenticeMove:1;
-    u32 padding:5;
+    //u32 padding:5; probably unnecessary now
     // end of word
 
     union {
