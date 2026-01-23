@@ -8463,6 +8463,7 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     s32 dmg;
     u32 userFinalAttack;
     u32 targetFinalDefense;
+    u32 moveAcc;
 
     if (ctx->fixedBasePower)
         gBattleMovePower = ctx->fixedBasePower;
@@ -10879,6 +10880,7 @@ bool32 CanMoveSkipAccuracyCalc(u32 battlerAtk, u32 battlerDef, enum Ability abil
 
 u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkAbility, enum Ability defAbility, enum HoldEffect atkHoldEffect, enum HoldEffect defHoldEffect)
 {
+    /*
     u32 calc, moveAcc;
     s8 buff, accStage, evasionStage;
     u32 atkParam = GetBattlerHoldEffectParam(battlerAtk);
@@ -11006,7 +11008,8 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
     if (HasWeatherEffect() && gBattleWeather & B_WEATHER_FOG)
         calc = (calc * 60) / 100; // modified by 3/5
 
-    return calc;
+    return calc; */
+    return 100; //Cancel the accuracy calculation for the attack (move cannot miss unless invulnerability)
 }
 
 bool32 IsSemiInvulnerable(u32 battler, enum SemiInvulnerableExclusion excludeCommander)
