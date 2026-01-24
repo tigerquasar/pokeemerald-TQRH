@@ -2412,4 +2412,169 @@ const struct AbilityInfo gAbilitiesInfo[ABILITIES_COUNT] =
         .cantBeSwapped = TRUE,
         .cantBeTraced = TRUE,
     },
+
+    //new abilities
+    /* template
+    [ABILITY_] = 
+    {
+        .name = _(""),
+        .description = COMPOUND_STRING("."),
+        .aiRating = ,
+    },
+    */
+    [ABILITY_SPARRING_PARTNER] = 
+    {
+        .name = _("Sparring Partner"),
+        .description = COMPOUND_STRING("Weakens punching moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_AIR_BENDER] = 
+    {
+        .name = _("Air Bender"),
+        .description = COMPOUND_STRING(""),
+        .aiRating = 6,
+    },
+
+    [ABILITY_PARTY_POOPER] = 
+    {
+        .name = _("Party_Pooper"),
+        .description = COMPOUND_STRING("Avoid copied moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_METAL_ARMOR] = 
+    {
+        .name = _("Metal Armor"),
+        .description = COMPOUND_STRING("Avoid slicing moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_SWORD_BREAKER] = 
+    {
+        .name = _("Sword Breaker"),
+        .description = COMPOUND_STRING("Lowers Atk on slash."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_DUELLIST] = 
+    {
+        .name = _("Duellist"),
+        .description = COMPOUND_STRING("Ups and resists slash."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_THICK_SKIN] = 
+    {
+        .name = _("Thick Skin"),
+        .description = COMPOUND_STRING("Weakens biting moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_REGENPOWDER] = 
+    {
+        .name = _("Regen-Powder"),
+        .description = COMPOUND_STRING("Powder moves heal self."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_CANNON] = 
+    {
+        .name = _("Cannon"),
+        .description = COMPOUND_STRING("Strengthens ballistic moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_AURA_WALL] = 
+    {
+        .name = _("Aura Wall"),
+        .description = COMPOUND_STRING("Avoids pulse moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_MUSCULAR_LEG] = 
+    {
+        .name = _("Muscular Leg"),
+        .description = COMPOUND_STRING("Strengthens kicking moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_GRAPPLER] = 
+    {
+        .name = _("Grappler"),
+        .description = COMPOUND_STRING("Weakens kicking moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_HEAVYWEIGHT] = 
+    {
+        .name = _("Heavyweight"),
+        .description = COMPOUND_STRING("Strengthens slaming moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_BRICK_WALL] = 
+    {
+        .name = _("Brick Wall"),
+        .description = COMPOUND_STRING("Fights back slamming moves ."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_TAIL] = 
+    {
+        .name = _("Tail"),
+        .description = COMPOUND_STRING("Strengthens whipping moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_INDOMITABLE] = 
+    {
+        .name = _("Indomitable"),
+        .description = COMPOUND_STRING("Resists whipping moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_RED_DOT] = 
+    {
+        .name = _("Red dot"),
+        .description = COMPOUND_STRING("Strengthens beam moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_REFRACTION] = 
+    {
+        .name = _("Refraction"),
+        .description = COMPOUND_STRING("Avoid beam moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_REINFORCED_BEAK] = 
+    {
+        .name = _("REINFORCED BEAK"),
+        .description = COMPOUND_STRING("Strengthens piercing moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_SHARP_HORN] = 
+    {
+        .name = _("Sharp_Horn"),
+        .description = COMPOUND_STRING("Strengthens piercing moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_ETHERAL_BODY] = 
+    {
+        .name = _("Etheral Body"),
+        .description = COMPOUND_STRING("Avoids piercing moves."),
+        .aiRating = 6,
+    },
+
+    [ABILITY_LUMEN] = 
+    {
+        .name = _("Lumen"),
+        .description = COMPOUND_STRING("Strengthens light moves."),
+        .aiRating = 6,
+    },
+
+
 };
