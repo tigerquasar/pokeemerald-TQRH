@@ -518,6 +518,8 @@ enum __attribute__((packed)) MoveEffect
     MOVE_EFFECT_FIRE_SPIN_SIDE,
     MOVE_EFFECT_FIXED_POWER,
     // Max move effects end. They can be used for (custom) normal moves.
+    //custom effect (new)
+    MOVE_EFFECT_BURN2,
 
     NUM_MOVE_EFFECTS
 };

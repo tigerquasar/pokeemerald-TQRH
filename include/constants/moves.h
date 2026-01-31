@@ -912,8 +912,9 @@
 
 //Custom Moves
 #define MOVE_URANIUM_WIND 848
+#define MOVE_EMBER2 849
 
-#define MOVES_COUNT_CUSTOM 849
+#define MOVES_COUNT_CUSTOM 850
 
 
 #define MOVES_COUNT         MOVES_COUNT_CUSTOM

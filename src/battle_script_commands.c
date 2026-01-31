@@ -4134,6 +4134,47 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         }
         break;
     }
+    // New additionnal effect system : now moves with additionnal effect will charge a loading bar / counter, with previous chance activation now the percent of bar loaded
+    case MOVE_EFFECT_BURN2:
+    {
+        /*
+        if (CanBeBurned(gBattlerTarget, gBattlerAttacker, GetBattlerAbility(gBattlerAttacker)))
+        {
+            
+            if(gBattleMons[gEffectBattler].neweffect.burnCounter >= 60)
+            {
+                SetNonVolatileStatus(gEffectBattler, MOVE_EFFECT_BURN, battleScript, TRIGGER_ON_MOVE);
+            }
+            SetNonVolatileStatus(gEffectBattler, MOVE_EFFECT_BURN, battleScript, TRIGGER_ON_MOVE);
+        }
+        
+        
+        if(gBattleMons[gEffectBattler].neweffect.burnCounter  < 2 )
+        {
+            gBattleMons[gEffectBattler].neweffect.burnCounter += 1;
+        }
+        if(gBattleMons[gEffectBattler].neweffect.burnCounter == 2)
+        {
+            SetNonVolatileStatus(gEffectBattler, MOVE_EFFECT_BURN, battleScript, TRIGGER_ON_MOVE);
+        }
+        */
+        const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
+        u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
+        if (CanBeBurned(gBattlerAttacker, gBattlerTarget, GetBattlerAbility(gBattlerTarget)))
+        {
+            if(gBattleMons[gEffectBattler].neweffect.burnCounter  < 2 )
+            {
+                gBattleMons[gEffectBattler].neweffect.burnCounter += fractionActivate;
+            }
+            if(gBattleMons[gEffectBattler].neweffect.burnCounter == 2)
+            {
+                SetNonVolatileStatus(gEffectBattler, MOVE_EFFECT_BURN, battleScript, TRIGGER_ON_MOVE);
+            }
+        }
+        
+        
+        break;
+    }
         default:
             break;
     }
@@ -4194,7 +4235,7 @@ static void Cmd_setadditionaleffects(void)
             // Various checks for if this move effect can be applied this turn
             if (CanApplyAdditionalEffect(additionalEffect))
             {
-                percentChance = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
+                percentChance = 0; //CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect); // now every secondary effect activate
 
                 // Activate effect if it's primary (chance == 0) or if RNGesus says so
                 if ((percentChance == 0) || RandomPercentage(RNG_SECONDARY_EFFECT + gBattleStruct->additionalEffectsCounter, percentChance))

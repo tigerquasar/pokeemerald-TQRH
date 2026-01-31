@@ -356,6 +356,11 @@ struct Volatiles
     // u32 bonusCritStages:3;
 };
 
+struct NewEffect
+{
+    u32 burnCounter:3;
+};
+
 struct BattlePokemon
 {
     /*0x00*/ u16 species;
@@ -391,6 +396,7 @@ struct BattlePokemon
     /*0x5D*/ u32 otId;
     /*0x61*/ u8 metLevel;
     /*0x62*/ bool8 isShiny;
+    /*0x63*/ struct NewEffect neweffect;
 };
 
 struct EvolutionParam

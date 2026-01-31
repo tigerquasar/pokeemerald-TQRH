@@ -3664,6 +3664,8 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
         dst->statStages[i] = DEFAULT_STAT_STAGE;
 
     memset(&dst->volatiles, 0, sizeof(struct Volatiles));
+    memset(&dst->neweffect, 0, sizeof(struct NewEffect));
+
 }
 
 void CopyPartyMonToBattleData(u32 battler, u32 partyIndex)
