@@ -381,9 +381,9 @@ struct NewEffect
     //Stat minus 2
     u32 atkMinus2Counter:6;
     u32 defMinus2Counter:6;
-    u32 speatkMinus2Counter:6;
+    u32 speatkMinus2Counter:6;*/
     u32 spedefMinus2Counter:6;
-    u32 spdMinus2Counter:6;*/
+    /*u32 spdMinus2Counter:6;*/
 
 };
 

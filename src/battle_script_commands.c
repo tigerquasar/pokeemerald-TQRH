@@ -4295,7 +4295,7 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
     }
 
     //For stat change
-    case MOVE_EFFECT_ATK_MINUS1_COUNTER:
+    case MOVE_EFFECT_ATK_MINUS_1_COUNTER:
     {        
         const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
@@ -4315,7 +4315,7 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         break;
     }
 
-    case MOVE_EFFECT_DEF_MINUS1_COUNTER:
+    case MOVE_EFFECT_DEF_MINUS_1_COUNTER:
     {        
         const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
@@ -4335,7 +4335,7 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         break;
     }
 
-    case MOVE_EFFECT_SPEATK_MINUS1_COUNTER:
+    case MOVE_EFFECT_SP_ATK_MINUS_1_COUNTER:
     {        
         const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
@@ -4355,7 +4355,7 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         break;
     }
 
-    case MOVE_EFFECT_SPEDEF_MINUS1_COUNTER:
+    case MOVE_EFFECT_SP_DEF_MINUS_1_COUNTER:
     {        
         const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
@@ -4375,7 +4375,7 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         break;
     }
 
-    case MOVE_EFFECT_SPD_MINUS1_COUNTER:
+    case MOVE_EFFECT_SPD_MINUS_1_COUNTER:
     {        
         const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
@@ -4389,6 +4389,26 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
             else
             {
                 gBattleMons[gEffectBattler].neweffect.spdMinus1Counter += fractionActivate;
+            }
+            
+        }        
+        break;
+    }
+
+    case MOVE_EFFECT_SP_DEF_MINUS_2_COUNTER:
+    {        
+        const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
+        u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
+        if (TRUE /*maybe verify clear body or stat -6 already*/)
+        {
+            if(gBattleMons[gEffectBattler].neweffect.spedefMinus1Counter + fractionActivate >= 60)
+            {
+                SetMoveEffect(battler, effectBattler, MOVE_EFFECT_SP_DEF_MINUS_2, battleScript, effectFlags);
+                gBattleMons[gEffectBattler].neweffect.spedefMinus1Counter = 0;
+            }
+            else
+            {
+                gBattleMons[gEffectBattler].neweffect.spedefMinus1Counter += fractionActivate;
             }
             
         }        
