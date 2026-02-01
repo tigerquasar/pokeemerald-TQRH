@@ -358,7 +358,33 @@ struct Volatiles
 
 struct NewEffect
 {
-    u32 burnCounter:3;
+    // Non volatile status
+    u32 sleepCounter:6;
+    u32 poisonCounter:6;
+    u32 burnCounter:6;
+    u32 paralysisCounter:6;
+    u32 toxicCounter:6;
+    u32 frostbiteCounter:6;
+
+    //Volatile status
+    u32 confusionCounter:6;
+    u32 flinchCounter:6;
+
+    //Stat minus 1
+    u32 atkMinus1Counter:6;
+    u32 defMinus1Counter:6;
+    u32 speatkMinus1Counter:6;
+    u32 spedefMinus1Counter:6;
+    u32 spdMinus1Counter:6;
+
+    /*
+    //Stat minus 2
+    u32 atkMinus2Counter:6;
+    u32 defMinus2Counter:6;
+    u32 speatkMinus2Counter:6;
+    u32 spedefMinus2Counter:6;
+    u32 spdMinus2Counter:6;*/
+
 };
 
 struct BattlePokemon
@@ -397,6 +423,7 @@ struct BattlePokemon
     /*0x61*/ u8 metLevel;
     /*0x62*/ bool8 isShiny;
     /*0x63*/ struct NewEffect neweffect;
+
 };
 
 struct EvolutionParam

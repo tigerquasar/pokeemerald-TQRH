@@ -418,7 +418,7 @@ void ChooseStatBoostAnimation(u32 battler);
 void UpdateStallMons(void);
 bool32 TrySwitchInEjectPack(enum EjectPackTiming timing);
 u32 GetBattlerVolatile(u32 battler, enum Volatile _volatile);
-void SetMonVolatile(u32 battler, enum Volatile _volatile, u32 newValue);
+void SetMonVolatile(u64 battler, enum Volatile _volatile, u32 newValue);
 bool32 ItemHealMonVolatile(u32 battler, u16 itemId);
 void PushHazardTypeToQueue(u32 side, enum Hazards hazardType);
 bool32 IsHazardOnSide(u32 side, enum Hazards hazardType);
