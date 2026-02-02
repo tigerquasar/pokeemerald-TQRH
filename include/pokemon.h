@@ -387,6 +387,16 @@ struct NewEffect
     u32 spedefMinus2Counter:6;
     /*u32 spdMinus2Counter:6;*/
 
+    // Stat self plus 1
+    u32 atkPlus1Counter:6;
+    u32 defPlus1Counter:6;
+    u32 speatkPlus1Counter:6;
+    u32 spedefPlus1Counter:6;
+    u32 spdPlus1Counter:6;
+    u32 omniboostCounter:6;
+
+    u32 defPlus2Counter:6;
+
 };
 
 struct BattlePokemon
