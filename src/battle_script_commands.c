@@ -4401,14 +4401,14 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
         if (TRUE /*maybe verify clear body or stat -6 already*/)
         {
-            if(gBattleMons[gEffectBattler].neweffect.spedefMinus1Counter + fractionActivate >= 60)
+            if(gBattleMons[gEffectBattler].neweffect.spedefMinus2Counter + fractionActivate >= 60)
             {
                 SetMoveEffect(battler, effectBattler, MOVE_EFFECT_SP_DEF_MINUS_2, battleScript, effectFlags);
-                gBattleMons[gEffectBattler].neweffect.spedefMinus1Counter = 0;
+                gBattleMons[gEffectBattler].neweffect.spedefMinus2Counter = 0;
             }
             else
             {
-                gBattleMons[gEffectBattler].neweffect.spedefMinus1Counter += fractionActivate;
+                gBattleMons[gEffectBattler].neweffect.spedefMinus2Counter += fractionActivate;
             }
             
         }        
@@ -4538,18 +4538,20 @@ static void Cmd_seteffectsecondary(void)
     SetMoveEffect(battler, effectBattler, gBattleScripting.moveEffect, cmd->nextInstr, EFFECT_PRIMARY);
 }
 
+
 static void Cmd_clearvolatile(void)
 {
     CMD_ARGS(u8 battler, u8 _volatile);
 
     u32 battler = GetBattlerForBattleScript(cmd->battler);
 
-    SetMonVolatile(battler, cmd->_volatile, 0);
+    //SetMonVolatile(battler, cmd->_volatile, 0);
     if (cmd->_volatile == VOLATILE_MULTIPLETURNS)
         gProtectStructs[battler].chargingTurn = FALSE;
 
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
+
 
 static void Cmd_tryfaintmon(void)
 {
@@ -12221,13 +12223,15 @@ static void Cmd_trysetspikes(void)
     }
 }
 
+
 static void Cmd_setvolatile(void)
 {
     CMD_ARGS(u8 battler, u8 _volatile, u8 value);
 
-    SetMonVolatile(GetBattlerForBattleScript(cmd->battler), cmd->_volatile, cmd->value);
+    //SetMonVolatile(GetBattlerForBattleScript(cmd->battler), cmd->_volatile, cmd->value);
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
+
 
 static void Cmd_trysetperishsong(void)
 {
@@ -13373,6 +13377,7 @@ static void Cmd_setstealthrock(void)
     }
 }
 
+
 static void Cmd_trysetvolatile(void)
 {
     CMD_ARGS(u8 battler, u8 _volatile, const u8 *failInstr);
@@ -13385,7 +13390,7 @@ static void Cmd_trysetvolatile(void)
     }
     else
     {
-        SetMonVolatile(battler, cmd->_volatile, TRUE);
+        //SetMonVolatile(battler, cmd->_volatile, TRUE);
         switch (cmd->_volatile)
         {
         case VOLATILE_MAGNET_RISE:
@@ -13400,6 +13405,7 @@ static void Cmd_trysetvolatile(void)
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }
+
 
 static void Cmd_unused_0xde(void)
 {

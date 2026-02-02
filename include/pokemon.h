@@ -369,6 +369,8 @@ struct NewEffect
     //Volatile status
     u32 confusionCounter:6;
     u32 flinchCounter:6;
+    u32 infatuationCounter:6;
+    u32 disableCounter:6;
 
     //Stat minus 1
     u32 atkMinus1Counter:6;
