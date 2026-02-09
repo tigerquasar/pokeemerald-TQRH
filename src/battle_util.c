@@ -5162,13 +5162,58 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, u32 battler, enum Ability ab
                 }
                 sleep = 30;
 
-                i = RandomUniform(RNG_EFFECT_SPORE, 0, GetConfig(CONFIG_ABILITY_TRIGGER_CHANCE) >= GEN_4 ? 99 : 299);
+                i = RandomUniform(RNG_EFFECT_SPORE, 0, GetConfig(CONFIG_ABILITY_TRIGGER_CHANCE) >= GEN_4 ? 29 : 299);
                 if (i < poison)
-                    goto POISON_POINT;
-                if (i < paralysis)
-                    goto STATIC;
+                {
+                    if (IsBattlerAlive(gBattlerAttacker)
+                    && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+                    && IsBattlerTurnDamaged(gBattlerTarget)
+                    && CanBePoisoned(gBattlerTarget, gBattlerAttacker, gLastUsedAbility, abilityAtk)
+                    && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, abilityAtk, GetBattlerHoldEffect(gBattlerAttacker), move))
+                    {
+                        gEffectBattler = gBattlerAttacker;
+                        if(gBattleMons[gEffectBattler].neweffect.poisonCounter + 30 >= 60)
+                        {
+                            gBattleMons[gEffectBattler].neweffect.poisonCounter = 0;
+                            gBattleScripting.battler = gBattlerTarget;
+                            gBattleScripting.moveEffect = MOVE_EFFECT_POISON;
+                            PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
+                            BattleScriptCall(BattleScript_AbilityStatusEffect);
+                            effect++;
+                        }
+                        else
+                        {
+                            gBattleMons[gEffectBattler].neweffect.poisonCounter += 30;
+                        }
+                    
+                    }
+                }
+                else if (i < paralysis)
+                {
+                    if (IsBattlerAlive(gBattlerAttacker)
+                    && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+                    && IsBattlerTurnDamaged(gBattlerTarget)
+                    && CanBeParalyzed(gBattlerTarget, gBattlerAttacker, abilityAtk)
+                    && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, abilityAtk, GetBattlerHoldEffect(gBattlerAttacker), move))
+                    {
+                        gEffectBattler = gBattlerAttacker;
+                        if(gBattleMons[gEffectBattler].neweffect.paralysisCounter + 30 >= 60)
+                        {
+                            gBattleMons[gEffectBattler].neweffect.paralysisCounter = 0;
+                            gBattleScripting.battler = gBattlerTarget;
+                            gBattleScripting.moveEffect = MOVE_EFFECT_PARALYSIS;
+                            PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
+                            BattleScriptCall(BattleScript_AbilityStatusEffect);
+                            effect++;
+                        }
+                        else
+                        {
+                                gBattleMons[gEffectBattler].neweffect.paralysisCounter += 30;
+                        }
+                    }
+                }
                 // Sleep
-                if (i < sleep
+                else if (i < sleep
                  && IsBattlerAlive(gBattlerAttacker)
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                  && IsBattlerTurnDamaged(gBattlerTarget)
@@ -5176,20 +5221,30 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, u32 battler, enum Ability ab
                  && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, abilityAtk, holdEffectAtk, move))
                 {
                     if (IsSleepClauseEnabled())
+                    {
                         gBattleStruct->battlerState[gBattlerAttacker].sleepClauseEffectExempt = TRUE;
-                    gEffectBattler = gBattlerAttacker;
-                    gBattleScripting.battler = gBattlerTarget;
-                    gBattleScripting.moveEffect = MOVE_EFFECT_SLEEP;
-                    PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
-                    BattleScriptCall(BattleScript_AbilityStatusEffect);
-                    effect++;
+                        gEffectBattler = gBattlerAttacker;
+                        gBattleScripting.battler = gBattlerTarget;
+                        if(gBattleMons[gEffectBattler].neweffect.sleepCounter + 30 >= 60)
+                        {
+                            gBattleMons[gEffectBattler].neweffect.sleepCounter = 0;
+                            gBattleScripting.moveEffect = MOVE_EFFECT_SLEEP;
+                            PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
+                            BattleScriptCall(BattleScript_AbilityStatusEffect);
+                            effect++;
+                        }
+                        else
+                        {
+                            gBattleMons[gEffectBattler].neweffect.poisonCounter += 30;
+                        }
+                    }        
                 }
             }
         }
             break;
         case ABILITY_POISON_POINT:
             
-            POISON_POINT:
+            //POISON_POINT:
             {
                 enum Ability abilityAtk = GetBattlerAbility(gBattlerAttacker);
                 if (IsBattlerAlive(gBattlerAttacker)
@@ -5219,7 +5274,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, u32 battler, enum Ability ab
             break;
         case ABILITY_STATIC:
             
-            STATIC:
+            //STATIC:
             {
                 enum Ability abilityAtk = GetBattlerAbility(gBattlerAttacker);
                 if (IsBattlerAlive(gBattlerAttacker)

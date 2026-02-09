@@ -71,6 +71,7 @@
 #include "follower_npc.h"
 #include "load_save.h"
 #include "test/test_runner_battle.h"
+#include "battle_end_turn.h"
 
 // Helper for accessing command arguments and advancing gBattlescriptCurrInstr.
 //
@@ -3221,9 +3222,9 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         {
             static const u8 sTriAttackEffects[] =
             {
-                MOVE_EFFECT_BURN,
-                MOVE_EFFECT_FREEZE_OR_FROSTBITE,
-                MOVE_EFFECT_PARALYSIS
+                MOVE_EFFECT_BURN_COUNTER,
+                MOVE_EFFECT_FROSTBITE_COUNTER,
+                MOVE_EFFECT_PARALYSIS_COUNTER
             };
             SetMoveEffect(battler, effectBattler, RandomElement(RNG_TRI_ATTACK, sTriAttackEffects), battleScript, effectFlags);
         }
@@ -3573,8 +3574,12 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
     case MOVE_EFFECT_DIRE_CLAW:
         if (!gBattleMons[gEffectBattler].status1)
         {
-            static const u8 sDireClawEffects[] = { MOVE_EFFECT_POISON, MOVE_EFFECT_PARALYSIS, MOVE_EFFECT_SLEEP };
-            SetMoveEffect(battler, effectBattler, RandomElement(RNG_DIRE_CLAW, sDireClawEffects), battleScript, effectFlags);
+            //static const u8 sDireClawEffects[] = { MOVE_EFFECT_POISON, MOVE_EFFECT_PARALYSIS, MOVE_EFFECT_SLEEP };
+            //SetMoveEffect(battler, effectBattler, RandomElement(RNG_DIRE_CLAW, sDireClawEffects), battleScript, effectFlags);
+            const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
+            static const u8 sDireClawEffects[] = { MOVE_EFFECT_POISON_COUNTER, MOVE_EFFECT_PARALYSIS_COUNTER, MOVE_EFFECT_SLEEP_COUNTER };
+            u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
+            SetMoveEffect(battler, effectBattler, RandomElement(fractionActivate, sDireClawEffects), battleScript, effectFlags);
         }
         break;
     case MOVE_EFFECT_STEALTH_ROCK:
@@ -6485,6 +6490,8 @@ static void Cmd_moveend(void)
 
     enum BattleMoveEffects moveEffect = GetMoveEffect(gCurrentMove);
 
+    u32 side = GetBattlerSide(gBattlerTarget);
+
     do
     {
         switch (gBattleScripting.moveendState)
@@ -6660,6 +6667,55 @@ static void Cmd_moveend(void)
                 break;
             default:
                 break;
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_BEAM:
+            
+            if(moveEffect == EFFECT_BEAM && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY)
+            {
+                if (gSideTimers[side].reflectTimer > 1)
+                {
+                    gSideTimers[side].reflectTimer -= 1;
+                }
+                else if (gSideTimers[side].reflectTimer == 1)
+                {
+                    gSideTimers[side].reflectTimer = 0;
+                    gBattlerAttacker = GetBattlerSideForMessage(side);
+                    gSideStatuses[side] &= ~SIDE_STATUS_REFLECT;
+                    BattleScriptExecute(BattleScript_SideStatusWoreOff);
+                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_REFLECT);
+                    effect = TRUE;
+                }
+                if (gSideTimers[side].lightscreenTimer > 1)
+                {
+                    gSideTimers[side].lightscreenTimer -= 1;
+                }
+                else if (gSideTimers[side].lightscreenTimer == 1)
+                {
+                    gSideTimers[side].lightscreenTimer = 0;
+                    gBattlerAttacker = GetBattlerSideForMessage(side);
+                    gSideStatuses[side] &= ~SIDE_STATUS_LIGHTSCREEN;
+                    BattleScriptExecute(BattleScript_SideStatusWoreOff);
+                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_LIGHT_SCREEN);
+                    effect = TRUE;
+                }
+                if (gSideTimers[side].auroraVeilTimer > 1)
+                {
+                    gSideTimers[side].auroraVeilTimer -= 1;
+                }
+                else if (gSideTimers[side].auroraVeilTimer == 1)
+                {
+                    gSideTimers[side].auroraVeilTimer = 0;
+                    gBattlerAttacker = GetBattlerSideForMessage(side);
+                    gSideStatuses[side] &= ~SIDE_STATUS_AURORA_VEIL;
+                    BattleScriptExecute(BattleScript_SideStatusWoreOff);
+                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_AURORA_VEIL);
+                    effect = TRUE;
+                }
             }
             gBattleScripting.moveendState++;
             break;
@@ -13956,7 +14012,7 @@ static void Cmd_removescreens(void)
     bool32 failed;
 
     if (B_BRICK_BREAK >= GEN_4)
-        side = GetBattlerSide(gBattlerTarget); // From Gen 4 onwards, Brick Break can remove screens on the user's side if used on an ally
+        side = GetBattlerSide(gBattlerTarget); // From Gen 4 onwards, Brick Break can remove screens on the user's side if used on an ally 
     else
         side = GetBattlerSide(gBattlerAttacker) ^ BIT_SIDE;
 

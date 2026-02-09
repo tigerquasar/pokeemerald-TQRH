@@ -4415,7 +4415,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         #if B_UPDATED_MOVE_DATA >= GEN_2
             .additionalEffects = ADDITIONAL_EFFECTS({
                 .moveEffect = MOVE_EFFECT_TRI_ATTACK,
-                .chance = 20,
+                .chance = 15,
             }),
         #endif
         .contestEffect = C_UPDATED_MOVE_EFFECTS >= GEN_6 ? CONTEST_EFFECT_QUALITY_DEPENDS_ON_TIMING : CONTEST_EFFECT_STARTLE_PREV_MONS,
@@ -5757,9 +5757,9 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .makesContact = TRUE,
         .ignoresKingsRock = B_UPDATED_MOVE_FLAGS < GEN_3,
         .additionalEffects = ADDITIONAL_EFFECTS({
-            .moveEffect = MOVE_EFFECT_DEF_PLUS_1,
+            .moveEffect = MOVE_EFFECT_DEF_PLUS_1_COUNTER,
             .self = TRUE,
-            .chance = 10,
+            .chance = 12,
         }),
         .contestEffect = C_UPDATED_MOVE_EFFECTS >= GEN_6 ? CONTEST_EFFECT_AFFECTED_BY_PREV_APPEAL : CONTEST_EFFECT_BETTER_IF_SAME_TYPE,
         .contestCategory = CONTEST_CATEGORY_COOL,
@@ -19379,7 +19379,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .makesContact = TRUE,
         .additionalEffects = ADDITIONAL_EFFECTS({
             .moveEffect = MOVE_EFFECT_DIRE_CLAW,
-            .chance = 50,
+            .chance = 30,
         }),
         .battleAnimScript = gBattleAnimMove_DireClaw,
     },
@@ -23060,7 +23060,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A weak fire attack that may\n"
             "inflict a burn.2"),
-        .effect = EFFECT_HIT,
+        .effect = EFFECT_BEAM,
         .power = 1,
         .type = TYPE_NORMAL,
         .accuracy = 100,

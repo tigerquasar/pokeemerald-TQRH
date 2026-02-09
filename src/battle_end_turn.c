@@ -12,7 +12,7 @@
 #include "constants/items.h"
 #include "constants/moves.h"
 
-static u32 GetBattlerSideForMessage(u32 side)
+u32 GetBattlerSideForMessage(u32 side)
 {
     u32 battler = 0;
 

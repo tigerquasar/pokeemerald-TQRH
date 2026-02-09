@@ -6513,7 +6513,7 @@ BattleScript_AbilityPopUpOverwriteThenNormal:
 	setbyte sFIXED_ABILITY_POPUP, FALSE
 	return
 
-@ Can't compare directly to a value, have to compare to value at pointer
+@ Can't compare directly to a value, have to compare to value at pointer '
 sZero:
 .byte 0
 
@@ -7331,7 +7331,7 @@ BattleScript_WeakArmorActivates::
 	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_CHANGE_EMPTY, BattleScript_WeakArmorActivatesSpeed
 	pause B_WAIT_TIME_SHORTEST
 	printfromtable gStatDownStringIds
-	clearmoveresultflags MOVE_RESULT_MISSED @ Set by statbuffchange when stat can't be decreased
+	clearmoveresultflags MOVE_RESULT_MISSED @ Set by statbuffchange when stat can't be decreased '
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_WeakArmorActivatesSpeed
 BattleScript_WeakArmorDefPrintString:
@@ -7461,7 +7461,7 @@ BattleScript_RoughSkinActivates::
 	return
 
 BattleScript_RockyHelmetActivates::
-	@ don't play the animation for a fainted mon
+	@ don't play the animation for a fainted mon '
 	jumpifabsent BS_TARGET, BattleScript_RockyHelmetActivatesDmg
 	playanimation BS_TARGET, B_ANIM_HELD_ITEM_EFFECT
 	waitanimation
@@ -8947,3 +8947,6 @@ BattleScript_SwapToSubstituteContinue:
 	waitanimation
 BattleScript_SwapToSubstituteReturn:
 	return
+
+@BattleScript_EffectBeam::
+@	return
