@@ -67,7 +67,7 @@ static void SetRandomMultiHitCounter();
 static bool32 IsNonVolatileStatusBlocked(u32 battlerDef, enum Ability abilityDef, bool32 abilityAffected, const u8 *battleScript, enum FunctionCallOption option);
 static bool32 CanSleepDueToSleepClause(u32 battlerAtk, u32 battlerDef, enum FunctionCallOption option);
 static bool32 IsOpposingSideEmpty(u32 battler);
-static void ResetParadoxWeatherStat(u32 battler);
+//static void ResetParadoxWeatherStat(u32 battler);
 static void ResetParadoxTerrainStat(u32 battler);
 static bool32 CanBattlerFormChange(u32 battler, enum FormChanges method);
 
@@ -6111,7 +6111,7 @@ u32 GetParadoxHighestStatId(u32 battler)
     return highestId;
 }
 
-static void ResetParadoxWeatherStat(u32 battler)
+void ResetParadoxWeatherStat(u32 battler)
 {
     if (gBattleMons[battler].ability == ABILITY_PROTOSYNTHESIS
      && !gDisableStructs[battler].boosterEnergyActivated)

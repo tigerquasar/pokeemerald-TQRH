@@ -6491,6 +6491,7 @@ static void Cmd_moveend(void)
     enum BattleMoveEffects moveEffect = GetMoveEffect(gCurrentMove);
 
     u32 side = GetBattlerSide(gBattlerTarget);
+    u32 endMessageWeather = B_MSG_WEATHER_TURN_FOG;
 
     do
     {
@@ -6715,6 +6716,65 @@ static void Cmd_moveend(void)
                     gBattleCommunication[MULTISTRING_CHOOSER] = side;
                     PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_AURORA_VEIL);
                     effect = TRUE;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_PULSE:
+            if(moveEffect == EFFECT_PULSE && (gFieldStatuses & STATUS_FIELD_TERRAIN_ANY))
+            { 
+                if (gFieldTimers.terrainTimer > 1)
+                {
+                    gFieldTimers.terrainTimer -= 1;
+                }
+                else if(gFieldTimers.terrainTimer == 1)
+                {
+                    if (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_ELECTRIC_TERRAIN, B_MSG_TERRAIN_END_ELECTRIC);
+                    else if (gFieldStatuses & STATUS_FIELD_MISTY_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_MISTY_TERRAIN, B_MSG_TERRAIN_END_MISTY);
+                    else if (gFieldStatuses & STATUS_FIELD_GRASSY_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_GRASSY_TERRAIN, B_MSG_TERRAIN_END_GRASSY);
+                    else if (gFieldStatuses & STATUS_FIELD_PSYCHIC_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_PSYCHIC_TERRAIN, B_MSG_TERRAIN_END_PSYCHIC);
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_WIND:
+            if(moveEffect == EFFECT_WIND && GetCurrentBattleWeather() != 0xFF && !(gBattleWeather & B_WEATHER_RAIN && MoveAlwaysHitsInRain(gCurrentMove)) && !(gBattleWeather & B_WEATHER_SNOW && MoveAlwaysHitsInHailSnow(gCurrentMove)))
+            {
+                if (gWishFutureKnock.weatherDuration > 1)
+                {
+                    gWishFutureKnock.weatherDuration -= 1;
+                }
+                else if (gWishFutureKnock.weatherDuration == 1)
+                {
+                    if (gBattleWeather & B_WEATHER_RAIN)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_RAIN;
+                    }
+                    else if(gBattleWeather & B_WEATHER_SUN)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_SUN;
+                    }
+                    else if(gBattleWeather & B_WEATHER_SNOW)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_SNOW;
+                    }
+                    else if(gBattleWeather & B_WEATHER_SANDSTORM)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_SANDSTORM;
+                    }
+                    gBattleWeather = B_WEATHER_NONE;
+                    gWishFutureKnock.weatherDuration = 0;
+                    for (u32 battler = 0; battler < gBattlersCount; battler++)
+                        {
+                            gDisableStructs[battler].weatherAbilityDone = FALSE;
+                            ResetParadoxWeatherStat(battler);
+                        }
+                    gBattleCommunication[MULTISTRING_CHOOSER] = endMessageWeather;
+                    BattleScriptExecute(BattleScript_WeatherFaded);
                 }
             }
             gBattleScripting.moveendState++;
