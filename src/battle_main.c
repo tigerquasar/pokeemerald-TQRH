@@ -4910,7 +4910,20 @@ s32 GetWhichBattlerFasterArgs(struct BattleContext *ctx, bool32 ignoreChosenMove
             if (speedBattler1 == speedBattler2)
             {
                 // same speeds, same priorities
-                strikesFirst = 0;
+                bool32 move1IsKicking = IsKickingMove(GetChosenMoveFromPosition(ctx->battlerAtk));
+                bool32 move2IsKicking = IsKickingMove(GetChosenMoveFromPosition(ctx->battlerDef));
+                if(move1IsKicking  && !move2IsKicking)
+                {
+                    strikesFirst = 1;
+                }
+                else if(move2IsKicking && !move1IsKicking)
+                {
+                    strikesFirst = -1;
+                }
+                else
+                {
+                    strikesFirst = 0;
+                }
             }
             else if (speedBattler1 < speedBattler2)
             {

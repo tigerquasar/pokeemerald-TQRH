@@ -294,6 +294,36 @@ static inline bool32 IsPunchingMove(u32 moveId)
     return gMovesInfo[SanitizeMoveId(moveId)].punchingMove;
 }
 
+static inline bool32 IsKickingMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].kickingMove;
+}
+
+static inline bool32 IsSlamingMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].slamingMove;
+}
+
+static inline bool32 IsWhippingMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].whippingMove;
+}
+
+static inline bool32 IsBeamMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].beamMove;
+}
+
+static inline bool32 IsPiercingMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].piercingMove;
+}
+
+static inline bool32 IsLightMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].lightMove;
+}
+
 static inline bool32 IsBitingMove(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].bitingMove;
