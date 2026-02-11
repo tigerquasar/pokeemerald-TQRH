@@ -6671,9 +6671,9 @@ static void Cmd_moveend(void)
             }
             gBattleScripting.moveendState++;
             break;
-        case MOVEEND_BEAM:
+        case MOVEEND_LIGHT:
             
-            if(moveEffect == EFFECT_BEAM && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY)
+            if(moveEffect == EFFECT_LIGHT && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY)
             {
                 if (gSideTimers[side].reflectTimer > 1)
                 {

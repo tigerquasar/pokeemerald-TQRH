@@ -2246,7 +2246,7 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
 
     //CUSTOM
 
-    [EFFECT_BEAM] = 
+    [EFFECT_LIGHT] = 
     {
         .battleScript = BattleScript_EffectHit,
         .battleTvScore = 0, // TODO: Assign points
