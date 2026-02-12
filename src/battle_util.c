@@ -8882,6 +8882,11 @@ static inline void MulByTypeEffectiveness(struct DamageContext *ctx, uq4_12_t *m
             RecordAbilityBattle(ctx->battlerAtk, ctx->abilityAtk);
     }
 
+    if (mod == UQ_4_12(0.5) && (IsSlicingMove(ctx->move) || IsClawMove(ctx->move))) // mechanic : side effect of Slicing / Claw Moves
+    {
+        mod = UQ_4_12(0.55);
+    }
+
     if (ctx->moveType == TYPE_PSYCHIC && defType == TYPE_DARK && gBattleMons[ctx->battlerDef].volatiles.miracleEye && mod == UQ_4_12(0.0))
         mod = UQ_4_12(1.0);
     if (GetMoveEffect(ctx->move) == EFFECT_SUPER_EFFECTIVE_ON_ARG && defType == GetMoveArgType(ctx->move) && !ctx->isAnticipation)
@@ -8944,11 +8949,11 @@ void UpdateMoveResultFlags(uq4_12_t modifier, u16 *resultFlags)
         *resultFlags &= ~(MOVE_RESULT_NOT_VERY_EFFECTIVE | MOVE_RESULT_SUPER_EFFECTIVE);
         gBattleStruct->blunderPolicy = FALSE; // Don't activate if missed
     }
-    else if (modifier == UQ_4_12(1.0))
+    else if (modifier == UQ_4_12(1.0) || modifier == UQ_4_12(1.1)) // TODO -> specific message for attack with cutting effect maybe
     {
         *resultFlags &= ~(MOVE_RESULT_NOT_VERY_EFFECTIVE | MOVE_RESULT_SUPER_EFFECTIVE | MOVE_RESULT_DOESNT_AFFECT_FOE);
     }
-    else if (modifier > UQ_4_12(1.0))
+    else if (modifier > UQ_4_12(1.1))
     {
         *resultFlags |= MOVE_RESULT_SUPER_EFFECTIVE;
         *resultFlags &= ~(MOVE_RESULT_NOT_VERY_EFFECTIVE | MOVE_RESULT_DOESNT_AFFECT_FOE);

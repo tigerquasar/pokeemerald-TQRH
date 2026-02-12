@@ -105,6 +105,7 @@ struct MoveInfo
     bool32 beamMove:1;
     bool32 piercingMove:1;
     bool32 lightMove:1;
+    bool32 clawMove:1;
     bool32 minimizeDoubleDamage:1;
     bool32 ignoresTargetAbility:1;
     bool32 ignoresTargetDefenseEvasionStages:1;
@@ -320,6 +321,11 @@ static inline bool32 IsPiercingMove(u32 moveId)
 }
 
 static inline bool32 IsLightMove(u32 moveId)
+{
+    return gMovesInfo[SanitizeMoveId(moveId)].lightMove;
+}
+
+static inline bool32 IsClawMove(u32 moveId)
 {
     return gMovesInfo[SanitizeMoveId(moveId)].lightMove;
 }
