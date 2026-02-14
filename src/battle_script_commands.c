@@ -6798,6 +6798,20 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_SLAM:
+            if (moveEffect == EFFECT_SLAM && gBattleMons[gBattlerTarget].volatiles.embargo == FALSE)
+            {
+                if(gBattleMons[gBattlerTarget].neweffect.embargoCounter + 20 >= 60)
+                {
+                    gBattleMons[gBattlerTarget].neweffect.embargoCounter = 0;
+                    gBattleMons[gBattlerTarget].volatiles.embargo = TRUE;
+                    gDisableStructs[gBattlerTarget].embargoTimer = 4;
+                    BattleScriptExecute(BattleScript_EmbargoMessage);
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.embargoCounter += 20;
+                }
+            }
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_RAGE: // rage check

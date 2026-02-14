@@ -8650,10 +8650,17 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
 
     if (ctx->randomFactor)
     {
+        // New roll system, only for previously innacurate move
         moveAcc = GetMoveAccuracy(ctx->move);
-        //dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, DMG_ROLL_PERCENT_HI - DMG_ROLL_PERCENT_LO);
-        dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, (DMG_ROLL_PERCENT_HI - moveAcc)*2); // New roll system, only for previously innacurate move
-        //dmg /= 100;
+        if(moveAcc == 0 || (MoveAlwaysHitsInRain(ctx->move) && IsBattlerWeatherAffected(ctx->battlerDef, B_WEATHER_RAIN)) || ((gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)) && MoveAlwaysHitsInHailSnow(ctx->move)))
+        {
+            moveAcc = 100;
+        }
+        else if(MoveHas50AccuracyInSun(ctx->move) && IsBattlerWeatherAffected(ctx->battlerDef, B_WEATHER_SUN))
+        {
+            moveAcc = 50;
+        }
+        dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, (DMG_ROLL_PERCENT_HI - moveAcc)*2); 
         dmg *= 925; //These two next lines are here to replace the old roll system with a mid roll for balance purpose
         dmg /= (1000*100);
     }

@@ -2315,6 +2315,7 @@ BattleScript_EffectEmbargo::
 	setembargo BattleScript_ButItFailed
 	attackanimation
 	waitanimation
+BattleScript_EmbargoMessage::
 	printstring STRINGID_PKMNCANTUSEITEMSANYMORE
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
