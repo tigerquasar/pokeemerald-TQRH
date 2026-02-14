@@ -3975,6 +3975,7 @@ BattleScript_EffectTorment::
 	settorment BattleScript_ButItFailed
 	attackanimation
 	waitanimation
+BattleScript_TormentMessage::
 	printstring STRINGID_PKMNSUBJECTEDTOTORMENT
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd

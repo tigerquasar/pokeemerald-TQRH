@@ -397,6 +397,8 @@ struct NewEffect
 
     u32 defPlus2Counter:6;
 
+    u32 tormentCounter:6;
+
 };
 
 struct BattlePokemon

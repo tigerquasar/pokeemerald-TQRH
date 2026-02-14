@@ -6779,6 +6779,27 @@ static void Cmd_moveend(void)
             }
             gBattleScripting.moveendState++;
             break;
+        case MOVEEND_WHIP:
+            if (moveEffect == EFFECT_WHIP && gBattleMons[gBattlerTarget].volatiles.torment == FALSE
+            && (GetActiveGimmick(gBattlerTarget) != GIMMICK_DYNAMAX) && !IsAbilityOnSide(gBattlerTarget, ABILITY_AROMA_VEIL))
+            {
+                if(gBattleMons[gBattlerTarget].neweffect.tormentCounter + 20 >= 60)
+                {
+                    gBattleMons[gBattlerTarget].neweffect.tormentCounter = 0;
+                    gBattleMons[gBattlerTarget].volatiles.torment = TRUE;
+                    //gDisableStructs[gBattlerTarget].tormentTimer = 3;
+                    BattleScriptExecute(BattleScript_TormentMessage);
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.tormentCounter += 20;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_SLAM:
+            gBattleScripting.moveendState++;
+            break;
         case MOVEEND_RAGE: // rage check
             if (gBattleMons[gBattlerTarget].volatiles.rage
                 && IsBattlerAlive(gBattlerTarget)

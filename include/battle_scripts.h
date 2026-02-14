@@ -680,6 +680,7 @@ extern const u8 BattleScript_EffectSwallow[];
 extern const u8 BattleScript_EffectOverwriteAbility[];
 extern const u8 BattleScript_EffectHail[];
 extern const u8 BattleScript_EffectTorment[];
+extern const u8 BattleScript_TormentMessage[];
 extern const u8 BattleScript_EffectFlatter[];
 extern const u8 BattleScript_EffectNonVolatileStatus[];
 extern const u8 BattleScript_EffectMemento[];
