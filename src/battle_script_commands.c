@@ -1489,13 +1489,13 @@ static void AccuracyCheck(bool32 recalcDragonDarts, const u8 *nextInstr, const u
                 continue;
 
             u32 holdEffectDef = GetBattlerHoldEffect(battlerDef);
-            u32 accuracy = GetTotalAccuracy(gBattlerAttacker,
+            u32 accuracy = 100;/*GetTotalAccuracy(gBattlerAttacker,
                                             battlerDef,
                                             move,
                                             abilityAtk,
                                             abilityDef,
                                             holdEffectAtk,
-                                            holdEffectDef);
+                                            holdEffectDef);*/
 
             if (!RandomPercentage(RNG_ACCURACY, accuracy))
             {

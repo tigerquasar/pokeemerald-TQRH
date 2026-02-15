@@ -8632,6 +8632,10 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     u32 userFinalAttack;
     u32 targetFinalDefense;
     u32 moveAcc;
+    u32 buff;
+    u32 accStage = gBattleMons[ctx->battlerAtk].statStages[STAT_ACC];
+    u32 evasionStage = gBattleMons[ctx->battlerDef].statStages[STAT_EVASION];
+    u32 accStageModifier;
 
     if (ctx->fixedBasePower)
         gBattleMovePower = ctx->fixedBasePower;
@@ -8651,16 +8655,21 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     if (ctx->randomFactor)
     {
         // New roll system, only for previously innacurate move
-        moveAcc = GetMoveAccuracy(ctx->move);
-        if(moveAcc == 0 || (MoveAlwaysHitsInRain(ctx->move) && IsBattlerWeatherAffected(ctx->battlerDef, B_WEATHER_RAIN)) || ((gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)) && MoveAlwaysHitsInHailSnow(ctx->move)))
+        moveAcc = GetTotalAccuracy(ctx->battlerAtk, ctx->battlerDef, ctx->move, GetBattlerAbility(ctx->battlerAtk), GetBattlerAbility(ctx->battlerDef), GetBattlerHoldEffect(ctx->battlerAtk), GetBattlerHoldEffect(ctx->battlerDef));
+        if (accStage < DEFAULT_STAT_STAGE) 
         {
-            moveAcc = 100;
+            accStage = DEFAULT_STAT_STAGE;
         }
-        else if(MoveHas50AccuracyInSun(ctx->move) && IsBattlerWeatherAffected(ctx->battlerDef, B_WEATHER_SUN))
+        if (evasionStage > DEFAULT_STAT_STAGE) 
         {
-            moveAcc = 50;
+            evasionStage = DEFAULT_STAT_STAGE;
         }
-        dmg *= DMG_ROLL_PERCENT_HI - RandomUniform(RNG_DAMAGE_MODIFIER, 0, (DMG_ROLL_PERCENT_HI - moveAcc)*2); 
+        buff = accStage + DEFAULT_STAT_STAGE - evasionStage;
+        if (buff > MAX_STAT_STAGE)
+            buff = MAX_STAT_STAGE;
+        accStageModifier = gAccuracyStageRatios[buff].dividend * 100;
+        accStageModifier = accStageModifier / gAccuracyStageRatios[buff].divisor;
+        dmg *= RandomUniform(RNG_DAMAGE_MODIFIER, 3*moveAcc - 200 + accStageModifier - (moveAcc*accStageModifier/100), DMG_ROLL_PERCENT_HI); 
         dmg *= 925; //These two next lines are here to replace the old roll system with a mid roll for balance purpose
         dmg /= (1000*100);
     }
@@ -11067,14 +11076,15 @@ bool32 CanMoveSkipAccuracyCalc(u32 battlerAtk, u32 battlerDef, enum Ability abil
 
 u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkAbility, enum Ability defAbility, enum HoldEffect atkHoldEffect, enum HoldEffect defHoldEffect)
 {
-    /*
-    u32 calc, moveAcc;
+    
+    u32 calc;
     s8 buff, accStage, evasionStage;
     u32 atkParam = GetBattlerHoldEffectParam(battlerAtk);
     u32 defParam = GetBattlerHoldEffectParam(battlerDef);
 
     gPotentialItemEffectBattler = battlerDef;
-    accStage = gBattleMons[battlerAtk].statStages[STAT_ACC];
+    // Accuracy and evasion stage now handled outside of the fonction, for roll or other
+    /*accStage = gBattleMons[battlerAtk].statStages[STAT_ACC];
     evasionStage = gBattleMons[battlerDef].statStages[STAT_EVASION];
     if (atkAbility == ABILITY_UNAWARE || atkAbility == ABILITY_KEEN_EYE || atkAbility == ABILITY_MINDS_EYE
             || (GetConfig(CONFIG_ILLUMINATE_EFFECT) >= GEN_9 && atkAbility == ABILITY_ILLUMINATE))
@@ -11092,19 +11102,24 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
     if (buff < MIN_STAT_STAGE)
         buff = MIN_STAT_STAGE;
     if (buff > MAX_STAT_STAGE)
-        buff = MAX_STAT_STAGE;
+        buff = MAX_STAT_STAGE;*/
 
-    moveAcc = GetMoveAccuracy(move);
+    calc = GetMoveAccuracy(move);
     // Check Thunder and Hurricane on sunny weather.
     if (IsBattlerWeatherAffected(battlerDef, B_WEATHER_SUN) && MoveHas50AccuracyInSun(move))
-        moveAcc = 50;
-    // Check Wonder Skin.
-    if (defAbility == ABILITY_WONDER_SKIN && IsBattleMoveStatus(move) && moveAcc > 50)
-        moveAcc = 50;
+        calc = 50;
+    // Check Wonder Skin. TBD
+    /* if (defAbility == ABILITY_WONDER_SKIN && IsBattleMoveStatus(move) && moveAcc > 50)
+        moveAcc = 50;*/
 
-    calc = gAccuracyStageRatios[buff].dividend * moveAcc;
-    calc /= gAccuracyStageRatios[buff].divisor;
+    if(calc == 0 || (MoveAlwaysHitsInRain(move) && IsBattlerWeatherAffected(battlerDef, B_WEATHER_RAIN)) || ((gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)) && MoveAlwaysHitsInHailSnow(move)))
+    {
+        calc = 100;
+        return calc;
+    }
 
+    /*calc = gAccuracyStageRatios[buff].dividend * moveAcc;
+    calc /= gAccuracyStageRatios[buff].divisor;*/
     // Attacker's ability
     switch (atkAbility)
     {
@@ -11122,8 +11137,8 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
         break;
     }
 
-    // Target's ability
-    switch (defAbility)
+    // Target's ability 
+    /*switch (defAbility)
     {
     case ABILITY_SAND_VEIL:
         if (gBattleWeather & B_WEATHER_SANDSTORM && HasWeatherEffect())
@@ -11139,7 +11154,7 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
         break;
     default:
         break;
-    }
+    }*/
 
     // Attacker's ally's ability
     u32 atkAlly = BATTLE_PARTNER(battlerAtk);
@@ -11195,8 +11210,13 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
     if (HasWeatherEffect() && gBattleWeather & B_WEATHER_FOG)
         calc = (calc * 60) / 100; // modified by 3/5
 
-    return calc; */
-    return 100; //Cancel the accuracy calculation for the attack (move cannot miss unless invulnerability)
+    if (calc > 100)
+    {
+        calc = 100;
+    }
+    
+    return calc; 
+    //return 100; //Cancel the accuracy calculation for the attack (move cannot miss unless invulnerability)
 }
 
 bool32 IsSemiInvulnerable(u32 battler, enum SemiInvulnerableExclusion excludeCommander)
