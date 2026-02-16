@@ -8651,22 +8651,18 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     DAMAGE_APPLY_MODIFIER(GetWeatherDamageModifier(ctx));
     DAMAGE_APPLY_MODIFIER(GetCriticalModifier(ctx->isCrit));
     DAMAGE_APPLY_MODIFIER(GetGlaiveRushModifier(ctx->battlerDef));
+    buff = accStage + DEFAULT_STAT_STAGE - evasionStage;
+    dmg *=  gAccuracyStageRatios[buff].dividend;
+    dmg /=  gAccuracyStageRatios[buff].divisor;
 
     if (ctx->randomFactor)
     {
         // New roll system, only for previously innacurate move
-        moveAcc = GetTotalAccuracy(ctx->battlerAtk, ctx->battlerDef, ctx->move, GetBattlerAbility(ctx->battlerAtk), GetBattlerAbility(ctx->battlerDef), GetBattlerHoldEffect(ctx->battlerAtk), GetBattlerHoldEffect(ctx->battlerDef));
-        if (accStage < DEFAULT_STAT_STAGE) 
-        {
-            accStage = DEFAULT_STAT_STAGE;
-        }
-        if (evasionStage > DEFAULT_STAT_STAGE) 
-        {
-            evasionStage = DEFAULT_STAT_STAGE;
-        }
-        buff = accStage + DEFAULT_STAT_STAGE - evasionStage;
+        moveAcc = GetTotalAccuracy(ctx->battlerAtk, ctx->battlerDef, ctx->move, GetBattlerAbility(ctx->battlerAtk), GetBattlerAbility(ctx->battlerDef), GetBattlerHoldEffect(ctx->battlerAtk), GetBattlerHoldEffect(ctx->battlerDef));        
         if (buff > MAX_STAT_STAGE)
             buff = MAX_STAT_STAGE;
+        if (buff < DEFAULT_STAT_STAGE)
+            buff = DEFAULT_STAT_STAGE;
         accStageModifier = gAccuracyStageRatios[buff].dividend * 100;
         accStageModifier = accStageModifier / gAccuracyStageRatios[buff].divisor;
         dmg *= RandomUniform(RNG_DAMAGE_MODIFIER, 3*moveAcc - 200 + accStageModifier - (moveAcc*accStageModifier/100), DMG_ROLL_PERCENT_HI); 

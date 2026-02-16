@@ -704,6 +704,27 @@ static bool32 HandleEndTurnSyrupBomb(u32 battler)
     return effect;
 }
 
+static bool32 HandleEndTurnAccuracyEvasion(u32 battler)
+{
+    bool32 effect = FALSE;
+
+    gBattleStruct->eventState.endTurnBattler++;
+
+    if(gBattleMons[battler].statStages[STAT_ACC] < DEFAULT_STAT_STAGE)
+    {
+        gBattlescriptCurrInstr = BattleScript_AccuracyEndTurn;
+        BattleScriptExecute(gBattlescriptCurrInstr);
+        effect = TRUE;
+    }
+    else if(gBattleMons[battler].statStages[STAT_EVASION] > DEFAULT_STAT_STAGE)
+    {
+        gBattlescriptCurrInstr = BattleScript_EvasionEndTurn;
+        BattleScriptExecute(gBattlescriptCurrInstr);
+        effect = TRUE;
+    }
+    return effect;
+}
+
 static bool32 HandleEndTurnTaunt(u32 battler)
 {
     bool32 effect = FALSE;
@@ -1404,6 +1425,7 @@ static bool32 (*const sEndTurnEffectHandlers[])(u32 battler) =
     [ENDTURN_SALT_CURE] = HandleEndTurnSaltCure,
     [ENDTURN_OCTOLOCK] = HandleEndTurnOctolock,
     [ENDTURN_SYRUP_BOMB] = HandleEndTurnSyrupBomb,
+    [ENDTURN_ACCURACY_EVASION] = HandleEndTurnAccuracyEvasion,
     [ENDTURN_TAUNT] = HandleEndTurnTaunt,
     [ENDTURN_TORMENT] = HandleEndTurnTorment,
     [ENDTURN_ENCORE] = HandleEndTurnEncore,

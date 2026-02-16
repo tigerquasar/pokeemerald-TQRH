@@ -4534,6 +4534,26 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
         break;
     }
 
+    case MOVE_EFFECT_ACC_MINUS_1_COUNTER:
+    {        
+        const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
+        u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
+        if (TRUE /*maybe verify clear body or stat -6 already*/)
+        {
+            if(gBattleMons[gEffectBattler].neweffect.accMinus1Counter + fractionActivate >= 60)
+            {
+                SetMoveEffect(battler, effectBattler, MOVE_EFFECT_ACC_MINUS_1, battleScript, effectFlags);
+                gBattleMons[gEffectBattler].neweffect.accMinus1Counter = 0;
+            }
+            else
+            {
+                gBattleMons[gEffectBattler].neweffect.accMinus1Counter += fractionActivate;
+            }
+            
+        }        
+        break;
+    }
+
         default:
             break;
     }
