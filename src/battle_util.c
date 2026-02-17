@@ -8632,9 +8632,9 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     u32 userFinalAttack;
     u32 targetFinalDefense;
     u32 moveAcc;
-    u32 buff;
-    u32 accStage = gBattleMons[ctx->battlerAtk].statStages[STAT_ACC];
-    u32 evasionStage = gBattleMons[ctx->battlerDef].statStages[STAT_EVASION];
+    s8 buff;
+    s8 accStage = gBattleMons[ctx->battlerAtk].statStages[STAT_ACC];
+    s8 evasionStage = gBattleMons[ctx->battlerDef].statStages[STAT_EVASION];
     u32 accStageModifier;
 
     if (ctx->fixedBasePower)
@@ -8652,17 +8652,21 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     DAMAGE_APPLY_MODIFIER(GetCriticalModifier(ctx->isCrit));
     DAMAGE_APPLY_MODIFIER(GetGlaiveRushModifier(ctx->battlerDef));
     buff = accStage + DEFAULT_STAT_STAGE - evasionStage;
-    dmg *=  gAccuracyStageRatios[buff].dividend;
-    dmg /=  gAccuracyStageRatios[buff].divisor;
+        if (buff > MAX_STAT_STAGE)
+            buff = MAX_STAT_STAGE;
+        if (buff < MIN_STAT_STAGE)
+            buff = MIN_STAT_STAGE;
+    if (GetMoveAccuracy(ctx->move) != 0)
+    {
+        dmg *=  gAccuracyStageRatios[buff].dividend;
+        dmg /=  gAccuracyStageRatios[buff].divisor;
+    }
+    
 
     if (ctx->randomFactor)
     {
         // New roll system, only for previously innacurate move
-        moveAcc = GetTotalAccuracy(ctx->battlerAtk, ctx->battlerDef, ctx->move, GetBattlerAbility(ctx->battlerAtk), GetBattlerAbility(ctx->battlerDef), GetBattlerHoldEffect(ctx->battlerAtk), GetBattlerHoldEffect(ctx->battlerDef));        
-        if (buff > MAX_STAT_STAGE)
-            buff = MAX_STAT_STAGE;
-        if (buff < DEFAULT_STAT_STAGE)
-            buff = DEFAULT_STAT_STAGE;
+        moveAcc = GetTotalAccuracy(ctx->battlerAtk, ctx->battlerDef, ctx->move, GetBattlerAbility(ctx->battlerAtk), GetBattlerAbility(ctx->battlerDef), GetBattlerHoldEffect(ctx->battlerAtk), GetBattlerHoldEffect(ctx->battlerDef));
         accStageModifier = gAccuracyStageRatios[buff].dividend * 100;
         accStageModifier = accStageModifier / gAccuracyStageRatios[buff].divisor;
         dmg *= RandomUniform(RNG_DAMAGE_MODIFIER, 3*moveAcc - 200 + accStageModifier - (moveAcc*accStageModifier/100), DMG_ROLL_PERCENT_HI); 
@@ -11074,7 +11078,7 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
 {
     
     u32 calc;
-    s8 buff, accStage, evasionStage;
+    //s8 buff, accStage, evasionStage;
     u32 atkParam = GetBattlerHoldEffectParam(battlerAtk);
     u32 defParam = GetBattlerHoldEffectParam(battlerDef);
 
