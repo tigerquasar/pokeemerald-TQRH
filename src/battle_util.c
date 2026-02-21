@@ -8145,7 +8145,8 @@ static inline u32 CalcDefenseStat(struct DamageContext *ctx)
     // certain moves also ignore stat changes
     if (MoveIgnoresDefenseEvasionStages(move))
         defStage = DEFAULT_STAT_STAGE;
-
+    if (IsPiercingMove(move) && defStage > DEFAULT_STAT_STAGE)
+        defStage -= 1;
     defStat *= gStatStageRatios[defStage][0];
     defStat /= gStatStageRatios[defStage][1];
 
