@@ -8651,7 +8651,7 @@ static inline s32 DoMoveDamageCalcVars(struct DamageContext *ctx)
     DAMAGE_APPLY_MODIFIER(GetWeatherDamageModifier(ctx));
     DAMAGE_APPLY_MODIFIER(GetCriticalModifier(ctx->isCrit));
     DAMAGE_APPLY_MODIFIER(GetGlaiveRushModifier(ctx->battlerDef));
-    buff = accStage + DEFAULT_STAT_STAGE - evasionStage;
+    buff = accStage + DEFAULT_STAT_STAGE - evasionStage + 2*gBattleMons[ctx->battlerDef].neweffect.beamEffect ;
         if (buff > MAX_STAT_STAGE)
             buff = MAX_STAT_STAGE;
         if (buff < MIN_STAT_STAGE)

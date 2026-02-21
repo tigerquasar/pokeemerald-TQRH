@@ -6834,6 +6834,13 @@ static void Cmd_moveend(void)
             }
             gBattleScripting.moveendState++;
             break;
+        case MOVEEND_BEAM:
+            if (moveEffect == EFFECT_BEAM && gBattleMons[gBattlerTarget].neweffect.beamEffect == FALSE)
+            {
+                gBattleMons[gBattlerTarget].neweffect.beamEffect = TRUE;
+            }
+            gBattleScripting.moveendState++;
+            break;
         case MOVEEND_RAGE: // rage check
             if (gBattleMons[gBattlerTarget].volatiles.rage
                 && IsBattlerAlive(gBattlerTarget)
