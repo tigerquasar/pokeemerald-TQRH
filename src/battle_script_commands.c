@@ -6841,6 +6841,21 @@ static void Cmd_moveend(void)
             }
             gBattleScripting.moveendState++;
             break;
+        case MOVEEND_BALLISTIC:
+            if (moveEffect == EFFECT_BALLISTIC && gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer == 0)
+            {
+                if(gBattleMons[gBattlerTarget].neweffect.ballisticCounter + 20 >= 60)
+                {
+                    gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer = 3;
+                    gBattleMons[gBattlerTarget].neweffect.ballisticCounter = 0;
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.ballisticCounter += 20;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
         case MOVEEND_RAGE: // rage check
             if (gBattleMons[gBattlerTarget].volatiles.rage
                 && IsBattlerAlive(gBattlerTarget)

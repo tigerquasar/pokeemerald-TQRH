@@ -361,6 +361,7 @@ enum __attribute__((packed)) BattleMoveEffects
     EFFECT_SLAM,
     EFFECT_BEAM,
     EFFECT_PIERCING,
+    EFFECT_BALLISTIC,
     NUM_BATTLE_MOVE_EFFECTS,
 };
 

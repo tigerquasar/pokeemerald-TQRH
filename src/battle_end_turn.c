@@ -725,6 +725,20 @@ static bool32 HandleEndTurnAccuracyEvasion(u32 battler)
     return effect;
 }
 
+static bool32 HandleEndTurnBallisticEffect(u32 battler)
+{
+    bool32 effect = FALSE;
+
+    gBattleStruct->eventState.endTurnBattler++;
+
+    if(gBattleMons[battler].neweffect.ballisticEffectTimer > 0)
+    {
+        gBattleMons[battler].neweffect.ballisticEffectTimer -= 1;
+        effect = TRUE;
+    }
+    return effect;
+}
+
 static bool32 HandleEndTurnTaunt(u32 battler)
 {
     bool32 effect = FALSE;
@@ -1426,6 +1440,7 @@ static bool32 (*const sEndTurnEffectHandlers[])(u32 battler) =
     [ENDTURN_OCTOLOCK] = HandleEndTurnOctolock,
     [ENDTURN_SYRUP_BOMB] = HandleEndTurnSyrupBomb,
     [ENDTURN_ACCURACY_EVASION] = HandleEndTurnAccuracyEvasion,
+    [ENDTURN_BALLISTC_EFFECT] = HandleEndTurnBallisticEffect,
     [ENDTURN_TAUNT] = HandleEndTurnTaunt,
     [ENDTURN_TORMENT] = HandleEndTurnTorment,
     [ENDTURN_ENCORE] = HandleEndTurnEncore,

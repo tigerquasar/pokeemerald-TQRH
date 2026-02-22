@@ -23060,7 +23060,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A weak fire attack that may\n"
             "inflict a burn.2"),
-        .effect = EFFECT_PIERCING,
+        .effect = EFFECT_BALLISTIC,
         .power = 1,
         .type = TYPE_NORMAL,
         .accuracy = 100,
