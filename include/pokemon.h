@@ -405,6 +405,8 @@ struct NewEffect
 
     u32 beamEffect:1;
     u32 ballisticEffectTimer:2;
+    
+    u32 bittenEffect:4;
 
 };
 

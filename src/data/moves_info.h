@@ -10661,7 +10661,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A barrage of hard seeds\n"
             "is fired at the foe."),
-        .effect = EFFECT_HIT,
+        .effect = EFFECT_BALLISTIC,
         .power = 80,
         .type = TYPE_GRASS,
         .accuracy = 100,
@@ -23060,7 +23060,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A weak fire attack that may\n"
             "inflict a burn.2"),
-        .effect = EFFECT_BALLISTIC,
+        .effect = EFFECT_BITING,
         .power = 1,
         .type = TYPE_NORMAL,
         .accuracy = 100,
@@ -23071,7 +23071,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .piercingMove = TRUE,
         //.alwaysHitsInRain = TRUE,
         .additionalEffects = ADDITIONAL_EFFECTS({
-            .moveEffect = MOVE_EFFECT_FLINCH_COUNTER,
+            .moveEffect = MOVE_EFFECT_PARALYSIS_COUNTER,
             .chance = 15,
         }),
         .contestEffect = CONTEST_EFFECT_HIGHLY_APPEALING,

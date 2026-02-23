@@ -3196,6 +3196,8 @@ void SwitchInClearSetData(u32 battler, struct Volatiles *volatilesCopy)
             gBattleMons[i].volatiles.syrupBomb = FALSE;
         if (gDisableStructs[i].octolock && gDisableStructs[i].octolockedBy == battler)
             gDisableStructs[i].octolock = FALSE;
+        if (gBattleMons[i].neweffect.bittenEffect == BITTEN_BY(battler))
+            gBattleMons[i].neweffect.bittenEffect = 0;
     }
 
     gActionSelectionCursor[battler] = 0;
@@ -3321,6 +3323,8 @@ const u8* FaintClearSetData(u32 battler)
             gBattleMons[i].volatiles.syrupBomb = FALSE;
         if (gDisableStructs[i].octolock && gDisableStructs[i].octolockedBy == battler)
             gDisableStructs[i].octolock = FALSE;
+        if (gBattleMons[i].neweffect.bittenEffect == BITTEN_BY(battler))
+            gBattleMons[i].neweffect.bittenEffect = 0;
     }
 
     gActionSelectionCursor[battler] = 0;

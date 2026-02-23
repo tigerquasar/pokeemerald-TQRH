@@ -6693,7 +6693,7 @@ static void Cmd_moveend(void)
             break;
         case MOVEEND_LIGHT:
             
-            if(moveEffect == EFFECT_LIGHT && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY)
+            if(moveEffect == EFFECT_LIGHT && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY )
             {
                 if (gSideTimers[side].reflectTimer > 1)
                 {
@@ -6741,7 +6741,7 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_PULSE:
-            if(moveEffect == EFFECT_PULSE && (gFieldStatuses & STATUS_FIELD_TERRAIN_ANY))
+            if(moveEffect == EFFECT_PULSE && (gFieldStatuses & STATUS_FIELD_TERRAIN_ANY) )
             { 
                 if (gFieldTimers.terrainTimer > 1)
                 {
@@ -6762,7 +6762,7 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_WIND:
-            if(moveEffect == EFFECT_WIND && GetCurrentBattleWeather() != 0xFF && !(gBattleWeather & B_WEATHER_RAIN && MoveAlwaysHitsInRain(gCurrentMove)) && !(gBattleWeather & B_WEATHER_SNOW && MoveAlwaysHitsInHailSnow(gCurrentMove)))
+            if(moveEffect == EFFECT_WIND && GetCurrentBattleWeather() != 0xFF && !(gBattleWeather & B_WEATHER_RAIN && MoveAlwaysHitsInRain(gCurrentMove)) && !(gBattleWeather & B_WEATHER_SNOW && MoveAlwaysHitsInHailSnow(gCurrentMove)) )
             {
                 if (gWishFutureKnock.weatherDuration > 1)
                 {
@@ -6801,7 +6801,7 @@ static void Cmd_moveend(void)
             break;
         case MOVEEND_WHIP:
             if (moveEffect == EFFECT_WHIP && gBattleMons[gBattlerTarget].volatiles.torment == FALSE
-            && (GetActiveGimmick(gBattlerTarget) != GIMMICK_DYNAMAX) && !IsAbilityOnSide(gBattlerTarget, ABILITY_AROMA_VEIL))
+            && (GetActiveGimmick(gBattlerTarget) != GIMMICK_DYNAMAX) && !IsAbilityOnSide(gBattlerTarget, ABILITY_AROMA_VEIL) && IsBattlerTurnDamaged(gBattlerTarget))
             {
                 if(gBattleMons[gBattlerTarget].neweffect.tormentCounter + 20 >= 60)
                 {
@@ -6818,7 +6818,7 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_SLAM:
-            if (moveEffect == EFFECT_SLAM && gBattleMons[gBattlerTarget].volatiles.embargo == FALSE)
+            if (moveEffect == EFFECT_SLAM && gBattleMons[gBattlerTarget].volatiles.embargo == FALSE && IsBattlerTurnDamaged(gBattlerTarget))
             {
                 if(gBattleMons[gBattlerTarget].neweffect.embargoCounter + 20 >= 60)
                 {
@@ -6835,14 +6835,14 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_BEAM:
-            if (moveEffect == EFFECT_BEAM && gBattleMons[gBattlerTarget].neweffect.beamEffect == FALSE)
+            if (moveEffect == EFFECT_BEAM && gBattleMons[gBattlerTarget].neweffect.beamEffect == FALSE && IsBattlerTurnDamaged(gBattlerTarget))
             {
                 gBattleMons[gBattlerTarget].neweffect.beamEffect = TRUE;
             }
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_BALLISTIC:
-            if (moveEffect == EFFECT_BALLISTIC && gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer == 0)
+            if (moveEffect == EFFECT_BALLISTIC && gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer == 0 && IsBattlerTurnDamaged(gBattlerTarget))
             {
                 if(gBattleMons[gBattlerTarget].neweffect.ballisticCounter + 20 >= 60)
                 {
@@ -6853,6 +6853,17 @@ static void Cmd_moveend(void)
                 {
                     gBattleMons[gBattlerTarget].neweffect.ballisticCounter += 20;
                 }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_BITING:
+            if (moveEffect == EFFECT_BITING && gBattleMons[gBattlerTarget].neweffect.bittenEffect == 0 && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                gBattleMons[gBattlerTarget].neweffect.bittenEffect = BITTEN_BY(gBattlerAttacker);
+            }
+            else if(moveEffect != EFFECT_BITING)
+            {
+                gBattleMons[gBattlerTarget].neweffect.bittenEffect = 0;
             }
             gBattleScripting.moveendState++;
             break;
@@ -13829,6 +13840,28 @@ static void Cmd_switchoutabilities(void)
     }
     default:
         break;
+    }
+    if (gBattleMons[battler].neweffect.bittenEffect != 0)
+    {
+        u32 bitedamage = GetNonDynamaxMaxHP(battler) / 16;
+        if(bitedamage == 0)
+        {
+            bitedamage = 1;
+        }
+        u32 newhp;
+        if(gBattleMons[battler].hp > bitedamage)
+        {
+            newhp = gBattleMons[battler].hp - bitedamage;
+        }
+        else
+        {
+            newhp = 1;
+        }
+        BtlController_EmitSetMonData(battler, B_COMM_TO_CONTROLLER, REQUEST_HP_BATTLE,
+                                        1u << gBattleStruct->battlerPartyIndexes[battler],
+                                        sizeof(newhp),
+                                        &newhp);
+        MarkBattlerForControllerExec(battler);
     }
 
     gBattlescriptCurrInstr = cmd->nextInstr;
