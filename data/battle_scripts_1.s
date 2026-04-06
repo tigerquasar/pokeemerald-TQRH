@@ -2336,6 +2336,16 @@ BattleScript_EmbargoMessage::
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
+BattleScript_BittenMessage::
+	printstring STRINGID_PKMNBITTEN
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_MoveEnd
+	
+BattleScript_BittenEndMessage::
+	printstring STRINGID_PKMNNOLONGERBITTEN
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_MoveEnd
+
 BattleScript_EffectTailwind::
 	attackcanceler
 	settailwind BattleScript_ButItFailed

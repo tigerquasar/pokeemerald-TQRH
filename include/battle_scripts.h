@@ -725,6 +725,8 @@ extern const u8 BattleScript_EffectMiracleEye[];
 extern const u8 BattleScript_EffectTailwind[];
 extern const u8 BattleScript_EffectEmbargo[];
 extern const u8 BattleScript_EmbargoMessage[];
+extern const u8 BattleScript_BittenMessage[];
+extern const u8 BattleScript_BittenEndMessage[];
 extern const u8 BattleScript_EffectAquaRing[];
 extern const u8 BattleScript_EffectTrickRoom[];
 extern const u8 BattleScript_EffectWonderRoom[];
