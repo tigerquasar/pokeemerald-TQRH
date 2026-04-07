@@ -6860,16 +6860,20 @@ static void Cmd_moveend(void)
             if ((moveEffect == EFFECT_BITING || IsBitingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.bittenEffect == 0 && IsBattlerTurnDamaged(gBattlerTarget))
             {
                 gBattleMons[gBattlerTarget].neweffect.bittenEffect = BITTEN_BY(gBattlerAttacker);
-                BattleScriptExecute(BattleScript_BittenMessage);
+                if (IsBattlerAlive(gBattlerTarget))
+                {
+                    BattleScriptExecute(BattleScript_BittenMessage);
+                }
+                
             }
-            else if(moveEffect != EFFECT_BITING )
+            else if(moveEffect != EFFECT_BITING && !IsBitingMove(gCurrentMove) )
             {
                 for (u32 battler = 0; battler < gBattlersCount; battler++)
                 {
                     if (gBattleMons[battler].neweffect.bittenEffect == BITTEN_BY(gBattlerAttacker))
                     {
                         gBattleMons[battler].neweffect.bittenEffect = 0;
-                        BattleScriptExecute(BattleScript_BittenEndMessage); //placeholder message because somethind don't work
+                        BattleScriptExecute(BattleScript_BittenEndMessage);
                     }
                 }
                 
