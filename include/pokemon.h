@@ -404,6 +404,7 @@ struct NewEffect
     u32 tormentCounter:6;
     u32 embargoCounter:6;
     u32 ballisticCounter:6;
+    //u32 punchingCounter:6;
 
     u32 beamEffect:1;
     u32 ballisticEffectTimer:2;
