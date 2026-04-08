@@ -898,6 +898,22 @@ static bool32 HandleEndTurnEmbargo(u32 battler)
     return effect;
 }
 
+static bool32 HandleEndTurnDizzy(u32 battler)
+{
+    bool32 effect = FALSE;
+
+    gBattleStruct->eventState.endTurnBattler++;
+
+    if (gBattleMons[battler].volatiles.dizzyTurns > 0 && --gBattleMons[battler].volatiles.dizzyTurns == 0)
+    {
+        //gBattleMons[battler].volatiles.dizzy = FALSE;
+        BattleScriptExecute(BattleScript_DizzyEndTurn);
+        effect = TRUE;
+    }
+
+    return effect;
+}
+
 static bool32 HandleEndTurnYawn(u32 battler)
 {
     bool32 effect = FALSE;
@@ -1449,6 +1465,7 @@ static bool32 (*const sEndTurnEffectHandlers[])(u32 battler) =
     [ENDTURN_TELEKINESIS] = HandleEndTurnTelekinesis,
     [ENDTURN_HEAL_BLOCK] = HandleEndTurnHealBlock,
     [ENDTURN_EMBARGO] = HandleEndTurnEmbargo,
+    [ENDTURN_DIZZY] = HandleEndTurnDizzy,
     [ENDTURN_YAWN] = HandleEndTurnYawn,
     [ENDTURN_PERISH_SONG] = HandleEndTurnPerishSong,
     [ENDTURN_ROOST] = HandleEndTurnRoost,

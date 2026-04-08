@@ -3132,6 +3132,18 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
             }
         }
         break;
+    case MOVE_EFFECT_DIZZY:
+        if (!CanBeDizzy(gEffectBattler) || gBattleMons[gEffectBattler].volatiles.dizzyTurns || (IsSafeguardProtected(gBattlerAttacker, gEffectBattler, GetBattlerAbility(gBattlerAttacker)) && !primary))
+        {
+            gBattlescriptCurrInstr = battleScript;
+        }
+        else
+        {
+            gBattleMons[gEffectBattler].volatiles.dizzyTurns = 3;
+            BattleScriptPush(battleScript);
+            gBattlescriptCurrInstr = BattleScript_MoveEffectDizzy;
+        }
+        break;
     case MOVE_EFFECT_FLINCH:
         if (battlerAbility == ABILITY_INNER_FOCUS)
         {
@@ -4276,6 +4288,25 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
             else
             {
                 gBattleMons[gEffectBattler].neweffect.confusionCounter += fractionActivate;
+            }            
+        }               
+        break;
+    }
+
+    case MOVE_EFFECT_DIZZY_COUNTER:
+    {       
+        const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
+        u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
+        if (CanBeDizzy(gBattlerTarget))
+        {
+            if(gBattleMons[gEffectBattler].neweffect.dizzyCounter + fractionActivate >= 60)
+            {
+                SetMoveEffect(battler, effectBattler, MOVE_EFFECT_DIZZY, battleScript, effectFlags);
+                gBattleMons[gEffectBattler].neweffect.dizzyCounter = 0;
+            }
+            else
+            {
+                gBattleMons[gEffectBattler].neweffect.dizzyCounter += fractionActivate;
             }            
         }               
         break;

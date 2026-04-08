@@ -372,6 +372,8 @@ struct NewEffect
     u32 infatuationCounter:6;
     u32 disableCounter:6;
 
+    u32 dizzyCounter:6;
+
     //Stat minus 1
     u32 atkMinus1Counter:6;
     u32 defMinus1Counter:6;

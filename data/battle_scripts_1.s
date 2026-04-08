@@ -6386,6 +6386,11 @@ BattleScript_EmbargoEndTurn::
 	tryactivateitem BS_ATTACKER, ACTIVATION_ON_USABLE_AGAIN
 	end2
 
+BattleScript_DizzyEndTurn::
+	printstring STRINGID_DIZZYENDS
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
 BattleScript_TelekinesisEndTurn::
 	printstring STRINGID_TELEKINESISENDS
 	waitmessage B_WAIT_TIME_LONG
@@ -6462,6 +6467,12 @@ BattleScript_MoveEffectWrap::
 BattleScript_MoveEffectConfusion::
 	volatileanimation BS_EFFECT_BATTLER, VOLATILE_CONFUSION
 	printstring STRINGID_PKMNWASCONFUSED
+	waitmessage B_WAIT_TIME_LONG
+	return
+
+BattleScript_MoveEffectDizzy::
+	volatileanimation BS_EFFECT_BATTLER, VOLATILE_CONFUSION
+	printstring STRINGID_PKMNDIZZY
 	waitmessage B_WAIT_TIME_LONG
 	return
 

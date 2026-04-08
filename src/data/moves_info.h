@@ -23060,7 +23060,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A weak fire attack that may\n"
             "inflict a burn.2"),
-        .effect = EFFECT_BITING,
+        .effect = EFFECT_HIT,
         .power = 1,
         .type = TYPE_NORMAL,
         .accuracy = 100,
@@ -23068,11 +23068,11 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .category = DAMAGE_CATEGORY_SPECIAL,
-        .piercingMove = TRUE,
+        //.piercingMove = TRUE,
         //.alwaysHitsInRain = TRUE,
         .additionalEffects = ADDITIONAL_EFFECTS({
-            .moveEffect = MOVE_EFFECT_PARALYSIS_COUNTER,
-            .chance = 15,
+            .moveEffect = MOVE_EFFECT_DIZZY_COUNTER,
+            .chance = 30,
         }),
         .contestEffect = CONTEST_EFFECT_HIGHLY_APPEALING,
         .contestCategory = C_UPDATED_MOVE_CATEGORIES >= GEN_6 ? CONTEST_CATEGORY_CUTE : CONTEST_CATEGORY_BEAUTY,

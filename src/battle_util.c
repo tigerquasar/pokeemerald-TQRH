@@ -6455,6 +6455,16 @@ bool32 CanBeConfused(u32 battler)
     return TRUE;
 }
 
+bool32 CanBeDizzy(u32 battler)
+{
+    enum Ability ability = GetBattlerAbility(battler);
+    if (gBattleMons[battler].volatiles.dizzyTurns > 0
+     || IsBattlerTerrainAffected(battler, ability, GetBattlerHoldEffect(battler), STATUS_FIELD_MISTY_TERRAIN)
+     /*|| IsAbilityAndRecord(battler, ability, ABILITY_OWN_TEMPO)*/)
+        return FALSE;
+    return TRUE;
+}
+
 // second argument is 1/X of current hp compared to max hp
 bool32 HasEnoughHpToEatBerry(u32 battler, enum Ability ability, u32 hpFraction, u32 itemId)
 {
@@ -8349,6 +8359,18 @@ static inline uq4_12_t GetBurnOrFrostBiteModifier(struct DamageContext *ctx)
     return UQ_4_12(1.0);
 }
 
+static inline uq4_12_t GetDizzyModifier(struct DamageContext *ctx)
+{
+    if (gBattleMons[gEffectBattler].volatiles.dizzyTurns != 0)
+    {
+        return UQ_4_12(0.67);
+    }
+    else
+    {
+        return UQ_4_12(1.0);
+    }
+}
+
 static inline uq4_12_t GetCriticalModifier(bool32 isCrit)
 {
     if (isCrit)
@@ -8696,6 +8718,7 @@ s32 ApplyModifiersAfterDmgRoll(struct DamageContext *ctx, s32 dmg)
         DAMAGE_APPLY_MODIFIER(GetSameTypeAttackBonusModifier(ctx));
     DAMAGE_APPLY_MODIFIER(ctx->typeEffectivenessModifier);
     DAMAGE_APPLY_MODIFIER(GetBurnOrFrostBiteModifier(ctx));
+    DAMAGE_APPLY_MODIFIER(GetDizzyModifier(ctx));
     DAMAGE_APPLY_MODIFIER(GetZMaxMoveAgainstProtectionModifier(ctx));
     DAMAGE_APPLY_MODIFIER(GetOtherModifiers(ctx));
 

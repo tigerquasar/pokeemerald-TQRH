@@ -4879,6 +4879,10 @@ s32 GetBattleMovePriority(u32 battler, enum Ability ability, u32 move)
     {
         priority += 3;
     }
+    if (IsBattleMoveStatus(move) && gBattleMons[battler].volatiles.dizzyTurns !=0)
+    {
+        priority -= 1;
+    }
 
     return priority;
 }
