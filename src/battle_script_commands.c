@@ -6912,7 +6912,7 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_PUNCHING:
-            if ((moveEffect == EFFECT_PUNCHING || IsPunchingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].volatiles.dizzyTurns == 0 && IsBattlerTurnDamaged(gBattlerTarget))
+            if ((moveEffect == EFFECT_PUNCHING || IsPunchingMove(gCurrentMove)) && CanBeDizzy(gBattlerTarget) && IsBattlerTurnDamaged(gBattlerTarget))
             {
                 if(gBattleMons[gBattlerTarget].neweffect.dizzyCounter + 20 >= 60)
                 {

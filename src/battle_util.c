@@ -6460,7 +6460,7 @@ bool32 CanBeDizzy(u32 battler)
     enum Ability ability = GetBattlerAbility(battler);
     if (gBattleMons[battler].volatiles.dizzyTurns > 0
      || IsBattlerTerrainAffected(battler, ability, GetBattlerHoldEffect(battler), STATUS_FIELD_MISTY_TERRAIN)
-     /*|| IsAbilityAndRecord(battler, ability, ABILITY_OWN_TEMPO)*/)
+     || IsAbilityAndRecord(battler, ability, ABILITY_SPARRING_PARTNER))
         return FALSE;
     return TRUE;
 }
@@ -8527,6 +8527,12 @@ static inline uq4_12_t GetDefenderAbilitiesModifier(struct DamageContext *ctx)
             recordAbility = TRUE;
         }
         break;
+    case ABILITY_SPARRING_PARTNER:
+        if(IsPunchingMove(ctx->move))
+        {
+            modifier = UQ_4_12(0.5);
+            recordAbility = TRUE;
+        }
     default:
         break;
     }
