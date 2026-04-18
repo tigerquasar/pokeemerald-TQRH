@@ -7635,6 +7635,8 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
     case ABILITY_SHARPNESS:
         if (IsSlicingMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
+        else if (IsClawMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
         break;
     case ABILITY_SUPREME_OVERLORD:
         modifier = uq4_12_multiply(modifier, GetSupremeOverlordModifier(battlerAtk));
@@ -7642,6 +7644,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
     case ABILITY_AIR_BENDER:
         if (IsWindMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
+        break;
+    case ABILITY_DUELIST:
+        if(IsSlicingMove(move))
+            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
     default:
         break;
@@ -8533,6 +8539,12 @@ static inline uq4_12_t GetDefenderAbilitiesModifier(struct DamageContext *ctx)
         break;
     case ABILITY_SPARRING_PARTNER:
         if(IsPunchingMove(ctx->move))
+        {
+            modifier = UQ_4_12(0.5);
+            recordAbility = TRUE;
+        }
+    case ABILITY_DUELLIST:
+        if(IsSlicingMove(ctx->move))
         {
             modifier = UQ_4_12(0.5);
             recordAbility = TRUE;

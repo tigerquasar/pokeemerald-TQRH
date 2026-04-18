@@ -2457,9 +2457,9 @@ const struct AbilityInfo gAbilitiesInfo[ABILITIES_COUNT] =
         .aiRating = 6,
     },
 
-    [ABILITY_DUELLIST] = 
+    [ABILITY_DUELIST] = 
     {
-        .name = _("Duellist"),
+        .name = _("Duelist"),
         .description = COMPOUND_STRING("Ups and resists slash."),
         .aiRating = 6,
     },
