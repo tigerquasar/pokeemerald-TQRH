@@ -8359,9 +8359,9 @@ static inline uq4_12_t GetBurnOrFrostBiteModifier(struct DamageContext *ctx)
     return UQ_4_12(1.0);
 }
 
-static inline uq4_12_t GetDizzyModifier(struct DamageContext *ctx)
+static inline uq4_12_t GetDizzyModifier(u32 battlerAtk)
 {
-    if (gBattleMons[gEffectBattler].volatiles.dizzyTurns != 0)
+    if (gBattleMons[battlerAtk].volatiles.dizzyTurns != 0)
     {
         return UQ_4_12(0.67);
     }
@@ -8724,7 +8724,7 @@ s32 ApplyModifiersAfterDmgRoll(struct DamageContext *ctx, s32 dmg)
         DAMAGE_APPLY_MODIFIER(GetSameTypeAttackBonusModifier(ctx));
     DAMAGE_APPLY_MODIFIER(ctx->typeEffectivenessModifier);
     DAMAGE_APPLY_MODIFIER(GetBurnOrFrostBiteModifier(ctx));
-    DAMAGE_APPLY_MODIFIER(GetDizzyModifier(ctx));
+    DAMAGE_APPLY_MODIFIER(GetDizzyModifier(ctx->battlerAtk)); // put it in other modifier ?
     DAMAGE_APPLY_MODIFIER(GetZMaxMoveAgainstProtectionModifier(ctx));
     DAMAGE_APPLY_MODIFIER(GetOtherModifiers(ctx));
 

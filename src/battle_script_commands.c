@@ -6528,6 +6528,7 @@ static void Cmd_moveend(void)
     u32 moveType = 0;
     u32 endMode, endState;
     u32 originallyUsedMove;
+    u32 boostedCounter = 0;
 
     if (gChosenMove == MOVE_UNAVAILABLE)
         originallyUsedMove = MOVE_NONE;
@@ -6719,211 +6720,6 @@ static void Cmd_moveend(void)
                 break;
             default:
                 break;
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_LIGHT:
-            
-            if((moveEffect == EFFECT_LIGHT || IsLightMove(gCurrentMove)) && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY )
-            {
-                if (gSideTimers[side].reflectTimer > 1)
-                {
-                    gSideTimers[side].reflectTimer -= 1;
-                }
-                else if (gSideTimers[side].reflectTimer == 1)
-                {
-                    gSideTimers[side].reflectTimer = 0;
-                    gBattlerAttacker = GetBattlerSideForMessage(side);
-                    gSideStatuses[side] &= ~SIDE_STATUS_REFLECT;
-                    BattleScriptExecute(BattleScript_SideStatusWoreOff);
-                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
-                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_REFLECT);
-                    effect = TRUE;
-                }
-                if (gSideTimers[side].lightscreenTimer > 1)
-                {
-                    gSideTimers[side].lightscreenTimer -= 1;
-                }
-                else if (gSideTimers[side].lightscreenTimer == 1)
-                {
-                    gSideTimers[side].lightscreenTimer = 0;
-                    gBattlerAttacker = GetBattlerSideForMessage(side);
-                    gSideStatuses[side] &= ~SIDE_STATUS_LIGHTSCREEN;
-                    BattleScriptExecute(BattleScript_SideStatusWoreOff);
-                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
-                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_LIGHT_SCREEN);
-                    effect = TRUE;
-                }
-                if (gSideTimers[side].auroraVeilTimer > 1)
-                {
-                    gSideTimers[side].auroraVeilTimer -= 1;
-                }
-                else if (gSideTimers[side].auroraVeilTimer == 1)
-                {
-                    gSideTimers[side].auroraVeilTimer = 0;
-                    gBattlerAttacker = GetBattlerSideForMessage(side);
-                    gSideStatuses[side] &= ~SIDE_STATUS_AURORA_VEIL;
-                    BattleScriptExecute(BattleScript_SideStatusWoreOff);
-                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
-                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_AURORA_VEIL);
-                    effect = TRUE;
-                }
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_PULSE:
-            if((moveEffect == EFFECT_PULSE || IsPulseMove(gCurrentMove)) && (gFieldStatuses & STATUS_FIELD_TERRAIN_ANY) )
-            { 
-                if (gFieldTimers.terrainTimer > 1)
-                {
-                    gFieldTimers.terrainTimer -= 1;
-                }
-                else if(gFieldTimers.terrainTimer == 1)
-                {
-                    if (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN)
-                        EndTurnTerrain(STATUS_FIELD_ELECTRIC_TERRAIN, B_MSG_TERRAIN_END_ELECTRIC);
-                    else if (gFieldStatuses & STATUS_FIELD_MISTY_TERRAIN)
-                        EndTurnTerrain(STATUS_FIELD_MISTY_TERRAIN, B_MSG_TERRAIN_END_MISTY);
-                    else if (gFieldStatuses & STATUS_FIELD_GRASSY_TERRAIN)
-                        EndTurnTerrain(STATUS_FIELD_GRASSY_TERRAIN, B_MSG_TERRAIN_END_GRASSY);
-                    else if (gFieldStatuses & STATUS_FIELD_PSYCHIC_TERRAIN)
-                        EndTurnTerrain(STATUS_FIELD_PSYCHIC_TERRAIN, B_MSG_TERRAIN_END_PSYCHIC);
-                }
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_WIND:
-            if((moveEffect == EFFECT_WIND || IsWindMove(gCurrentMove)) && GetCurrentBattleWeather() != 0xFF && !(gBattleWeather & B_WEATHER_RAIN && MoveAlwaysHitsInRain(gCurrentMove)) && !(gBattleWeather & B_WEATHER_SNOW && MoveAlwaysHitsInHailSnow(gCurrentMove)) )
-            {
-                if (gWishFutureKnock.weatherDuration > 1)
-                {
-                    gWishFutureKnock.weatherDuration -= 1;
-                }
-                else if (gWishFutureKnock.weatherDuration == 1)
-                {
-                    if (gBattleWeather & B_WEATHER_RAIN)
-                    {
-                        endMessageWeather = B_MSG_WEATHER_END_RAIN;
-                    }
-                    else if(gBattleWeather & B_WEATHER_SUN)
-                    {
-                        endMessageWeather = B_MSG_WEATHER_END_SUN;
-                    }
-                    else if(gBattleWeather & B_WEATHER_SNOW)
-                    {
-                        endMessageWeather = B_MSG_WEATHER_END_SNOW;
-                    }
-                    else if(gBattleWeather & B_WEATHER_SANDSTORM)
-                    {
-                        endMessageWeather = B_MSG_WEATHER_END_SANDSTORM;
-                    }
-                    gBattleWeather = B_WEATHER_NONE;
-                    gWishFutureKnock.weatherDuration = 0;
-                    for (u32 battler = 0; battler < gBattlersCount; battler++)
-                        {
-                            gDisableStructs[battler].weatherAbilityDone = FALSE;
-                            ResetParadoxWeatherStat(battler);
-                        }
-                    gBattleCommunication[MULTISTRING_CHOOSER] = endMessageWeather;
-                    BattleScriptExecute(BattleScript_WeatherFaded);
-                }
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_WHIP:
-            if ((moveEffect == EFFECT_WHIP || IsWhippingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].volatiles.torment == FALSE
-            && (GetActiveGimmick(gBattlerTarget) != GIMMICK_DYNAMAX) && !IsAbilityOnSide(gBattlerTarget, ABILITY_AROMA_VEIL) && IsBattlerTurnDamaged(gBattlerTarget))
-            {
-                if(gBattleMons[gBattlerTarget].neweffect.tormentCounter + 20 >= 60)
-                {
-                    gBattleMons[gBattlerTarget].neweffect.tormentCounter = 0;
-                    gBattleMons[gBattlerTarget].volatiles.torment = TRUE;
-                    //gDisableStructs[gBattlerTarget].tormentTimer = 3;
-                    BattleScriptExecute(BattleScript_TormentMessage);
-                }
-                else
-                {
-                    gBattleMons[gBattlerTarget].neweffect.tormentCounter += 20;
-                }
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_SLAM:
-            if ((moveEffect == EFFECT_SLAM || IsSlamingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].volatiles.embargo == FALSE && IsBattlerTurnDamaged(gBattlerTarget))
-            {
-                if(gBattleMons[gBattlerTarget].neweffect.embargoCounter + 20 >= 60)
-                {
-                    gBattleMons[gBattlerTarget].neweffect.embargoCounter = 0;
-                    gBattleMons[gBattlerTarget].volatiles.embargo = TRUE;
-                    gDisableStructs[gBattlerTarget].embargoTimer = 4;
-                    BattleScriptExecute(BattleScript_EmbargoMessage);
-                }
-                else
-                {
-                    gBattleMons[gBattlerTarget].neweffect.embargoCounter += 20;
-                }
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_BEAM:
-            if ((moveEffect == EFFECT_BEAM || IsBeamMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.beamEffect == FALSE && IsBattlerTurnDamaged(gBattlerTarget))
-            {
-                gBattleMons[gBattlerTarget].neweffect.beamEffect = TRUE;
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_BALLISTIC:
-            if ((moveEffect == EFFECT_BALLISTIC || IsBallisticMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer == 0 && IsBattlerTurnDamaged(gBattlerTarget))
-            {
-                if(gBattleMons[gBattlerTarget].neweffect.ballisticCounter + 20 >= 60)
-                {
-                    gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer = 3;
-                    gBattleMons[gBattlerTarget].neweffect.ballisticCounter = 0;
-                }
-                else
-                {
-                    gBattleMons[gBattlerTarget].neweffect.ballisticCounter += 20;
-                }
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_BITING:
-            if ((moveEffect == EFFECT_BITING || IsBitingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.bittenEffect == 0 && IsBattlerTurnDamaged(gBattlerTarget))
-            {
-                gBattleMons[gBattlerTarget].neweffect.bittenEffect = BITTEN_BY(gBattlerAttacker);
-                if (IsBattlerAlive(gBattlerTarget))
-                {
-                    BattleScriptExecute(BattleScript_BittenMessage);
-                }
-                
-            }
-            else if(moveEffect != EFFECT_BITING && !IsBitingMove(gCurrentMove) )
-            {
-                for (u32 battler = 0; battler < gBattlersCount; battler++)
-                {
-                    if (gBattleMons[battler].neweffect.bittenEffect == BITTEN_BY(gBattlerAttacker))
-                    {
-                        gBattleMons[battler].neweffect.bittenEffect = 0;
-                        BattleScriptExecute(BattleScript_BittenEndMessage);
-                    }
-                }
-                
-            }
-            gBattleScripting.moveendState++;
-            break;
-        case MOVEEND_PUNCHING:
-            if ((moveEffect == EFFECT_PUNCHING || IsPunchingMove(gCurrentMove)) && CanBeDizzy(gBattlerTarget) && IsBattlerTurnDamaged(gBattlerTarget))
-            {
-                if(gBattleMons[gBattlerTarget].neweffect.dizzyCounter + 20 >= 60)
-                {
-                    SetMoveEffect(gBattlerAttacker, gBattlerTarget, MOVE_EFFECT_DIZZY, cmd->nextInstr, NO_FLAGS);
-                    gBattleMons[gBattlerTarget].neweffect.dizzyCounter = 0;
-                }
-                else
-                {
-                    gBattleMons[gBattlerTarget].neweffect.dizzyCounter += 20;
-                }
-                
             }
             gBattleScripting.moveendState++;
             break;
@@ -7565,6 +7361,231 @@ static void Cmd_moveend(void)
             {
                 effect = TRUE;
                 BattleScriptCall(BattleScript_EffectHitEscape);
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_LIGHT:
+            
+            if((moveEffect == EFFECT_LIGHT || IsLightMove(gCurrentMove)) && gSideStatuses[side] & SIDE_STATUS_SCREEN_ANY )
+            {
+                if (gSideTimers[side].reflectTimer > 1)
+                {
+                    gSideTimers[side].reflectTimer -= 1;
+                }
+                else if (gSideTimers[side].reflectTimer == 1)
+                {
+                    gSideTimers[side].reflectTimer = 0;
+                    gBattlerAttacker = GetBattlerSideForMessage(side);
+                    gSideStatuses[side] &= ~SIDE_STATUS_REFLECT;
+                    BattleScriptCall(BattleScript_SideStatusWoreOff);
+                    //effect = TRUE;
+                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_REFLECT);
+                    effect = TRUE;
+                }
+                if (gSideTimers[side].lightscreenTimer > 1)
+                {
+                    gSideTimers[side].lightscreenTimer -= 1;
+                }
+                else if (gSideTimers[side].lightscreenTimer == 1)
+                {
+                    gSideTimers[side].lightscreenTimer = 0;
+                    gBattlerAttacker = GetBattlerSideForMessage(side);
+                    gSideStatuses[side] &= ~SIDE_STATUS_LIGHTSCREEN;
+                    BattleScriptCall(BattleScript_SideStatusWoreOff);
+                    //effect = TRUE;
+                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_LIGHT_SCREEN);
+                    effect = TRUE;
+                }
+                if (gSideTimers[side].auroraVeilTimer > 1)
+                {
+                    gSideTimers[side].auroraVeilTimer -= 1;
+                }
+                else if (gSideTimers[side].auroraVeilTimer == 1)
+                {
+                    gSideTimers[side].auroraVeilTimer = 0;
+                    gBattlerAttacker = GetBattlerSideForMessage(side);
+                    gSideStatuses[side] &= ~SIDE_STATUS_AURORA_VEIL;
+                    BattleScriptCall(BattleScript_SideStatusWoreOff);
+                    //effect = TRUE;
+                    gBattleCommunication[MULTISTRING_CHOOSER] = side;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_AURORA_VEIL);
+                    effect = TRUE;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_PULSE:
+            if((moveEffect == EFFECT_PULSE || IsPulseMove(gCurrentMove)) && (gFieldStatuses & STATUS_FIELD_TERRAIN_ANY) )
+            { 
+                if (gFieldTimers.terrainTimer > 1)
+                {
+                    gFieldTimers.terrainTimer -= 1;
+                }
+                else if(gFieldTimers.terrainTimer == 1)
+                {
+                    if (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_ELECTRIC_TERRAIN, B_MSG_TERRAIN_END_ELECTRIC);
+                    else if (gFieldStatuses & STATUS_FIELD_MISTY_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_MISTY_TERRAIN, B_MSG_TERRAIN_END_MISTY);
+                    else if (gFieldStatuses & STATUS_FIELD_GRASSY_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_GRASSY_TERRAIN, B_MSG_TERRAIN_END_GRASSY);
+                    else if (gFieldStatuses & STATUS_FIELD_PSYCHIC_TERRAIN)
+                        EndTurnTerrain(STATUS_FIELD_PSYCHIC_TERRAIN, B_MSG_TERRAIN_END_PSYCHIC);
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_WIND:
+            if((moveEffect == EFFECT_WIND || IsWindMove(gCurrentMove)) && GetCurrentBattleWeather() != 0xFF && !(gBattleWeather & B_WEATHER_RAIN && MoveAlwaysHitsInRain(gCurrentMove)) && !(gBattleWeather & B_WEATHER_SNOW && MoveAlwaysHitsInHailSnow(gCurrentMove)) )
+            {
+                if (gWishFutureKnock.weatherDuration > 1)
+                {
+                    gWishFutureKnock.weatherDuration -= 1;
+                }
+                else if (gWishFutureKnock.weatherDuration == 1)
+                {
+                    if (gBattleWeather & B_WEATHER_RAIN)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_RAIN;
+                    }
+                    else if(gBattleWeather & B_WEATHER_SUN)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_SUN;
+                    }
+                    else if(gBattleWeather & B_WEATHER_SNOW)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_SNOW;
+                    }
+                    else if(gBattleWeather & B_WEATHER_SANDSTORM)
+                    {
+                        endMessageWeather = B_MSG_WEATHER_END_SANDSTORM;
+                    }
+                    gBattleWeather = B_WEATHER_NONE;
+                    gWishFutureKnock.weatherDuration = 0;
+                    for (u32 battler = 0; battler < gBattlersCount; battler++)
+                        {
+                            gDisableStructs[battler].weatherAbilityDone = FALSE;
+                            ResetParadoxWeatherStat(battler);
+                        }
+                    gBattleCommunication[MULTISTRING_CHOOSER] = endMessageWeather;
+                    BattleScriptCall(BattleScript_WeatherFaded);
+                    effect = TRUE;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_WHIP:
+            if ((moveEffect == EFFECT_WHIP || IsWhippingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].volatiles.torment == FALSE
+            && (GetActiveGimmick(gBattlerTarget) != GIMMICK_DYNAMAX) && !IsAbilityOnSide(gBattlerTarget, ABILITY_AROMA_VEIL) && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                if(gBattleMons[gBattlerTarget].neweffect.tormentCounter + 20 >= 60)
+                {
+                    gBattleMons[gBattlerTarget].neweffect.tormentCounter = 0;
+                    gBattleMons[gBattlerTarget].volatiles.torment = TRUE;
+                    //gDisableStructs[gBattlerTarget].tormentTimer = 3;
+                    BattleScriptCall(BattleScript_TormentMessage);
+                    effect = TRUE;
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.tormentCounter += 20;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_SLAM:
+            if ((moveEffect == EFFECT_SLAM || IsSlamingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].volatiles.embargo == FALSE && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                if(gBattleMons[gBattlerTarget].neweffect.embargoCounter + 20 >= 60)
+                {
+                    gBattleMons[gBattlerTarget].neweffect.embargoCounter = 0;
+                    gBattleMons[gBattlerTarget].volatiles.embargo = TRUE;
+                    gDisableStructs[gBattlerTarget].embargoTimer = 4;
+                    BattleScriptCall(BattleScript_EmbargoMessage);
+                    effect = TRUE;
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.embargoCounter += 20;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_BEAM:
+            if ((moveEffect == EFFECT_BEAM || IsBeamMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.beamEffect == FALSE && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                gBattleMons[gBattlerTarget].neweffect.beamEffect = TRUE;
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_BALLISTIC:
+            if ((moveEffect == EFFECT_BALLISTIC || IsBallisticMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer == 0 && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                if(gBattleMons[gBattlerTarget].neweffect.ballisticCounter + 20 >= 60)
+                {
+                    gBattleMons[gBattlerTarget].neweffect.ballisticEffectTimer = 3;
+                    gBattleMons[gBattlerTarget].neweffect.ballisticCounter = 0;
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.ballisticCounter += 20;
+                }
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_BITING:
+            if ((moveEffect == EFFECT_BITING || IsBitingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.bittenEffect == 0 && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                gBattleMons[gBattlerTarget].neweffect.bittenEffect = BITTEN_BY(gBattlerAttacker);
+                if (IsBattlerAlive(gBattlerTarget))
+                {
+                    BattleScriptCall(BattleScript_BittenMessage);
+                    effect = TRUE;
+                }
+                
+            }
+            else if(moveEffect != EFFECT_BITING && !IsBitingMove(gCurrentMove) )
+            {
+                for (u32 battler = 0; battler < gBattlersCount; battler++)
+                {
+                    if (gBattleMons[battler].neweffect.bittenEffect == BITTEN_BY(gBattlerAttacker))
+                    {
+                        gBattleMons[battler].neweffect.bittenEffect = 0;
+                        BattleScriptCall(BattleScript_BittenEndMessage);
+                        effect = TRUE;
+                    }
+                }
+                
+            }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_PUNCHING:
+            if ((moveEffect == EFFECT_PUNCHING || IsPunchingMove(gCurrentMove)) && CanBeDizzy(gBattlerTarget) && IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                boostedCounter = IsAbilityAndRecord(gBattlerAttacker,GetBattlerAbility(gBattlerAttacker),ABILITY_IRON_FIST) ? 10 : 0;
+                /*if (IsAbilityAndRecord(gBattlerAttacker,GetBattlerAbility(gBattlerAttacker),ABILITY_IRON_FIST))
+                {
+                    boostedCounter = 10;
+                }
+                else 
+                {
+                    boostedCounter = 0;
+                }*/
+                if(gBattleMons[gBattlerTarget].neweffect.dizzyCounter + (20 + boostedCounter) >= 60)
+                {
+                    //SetMoveEffect(gBattlerAttacker, gBattlerTarget, MOVE_EFFECT_DIZZY, cmd->nextInstr, NO_FLAGS);
+                    gBattleMons[gBattlerTarget].volatiles.dizzyTurns = 3;
+                    gBattleMons[gBattlerTarget].neweffect.dizzyCounter = 0;
+                    BattleScriptCall(BattleScript_MoveEffectDizzy);
+                    effect = TRUE;
+                }
+                else
+                {
+                    gBattleMons[gBattlerTarget].neweffect.dizzyCounter += (20 + boostedCounter);
+                }
+                
             }
             gBattleScripting.moveendState++;
             break;

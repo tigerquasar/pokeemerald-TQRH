@@ -6471,7 +6471,7 @@ BattleScript_MoveEffectConfusion::
 	return
 
 BattleScript_MoveEffectDizzy::
-	volatileanimation BS_EFFECT_BATTLER, VOLATILE_CONFUSION
+	volatileanimation BS_TARGET, VOLATILE_CONFUSION
 	printstring STRINGID_PKMNDIZZY
 	waitmessage B_WAIT_TIME_LONG
 	return
