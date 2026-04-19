@@ -4316,7 +4316,7 @@ void SetMoveEffect(u32 battler, u32 effectBattler, enum MoveEffect moveEffect, c
     {       
         const struct AdditionalEffect *additionalEffect = GetMoveAdditionalEffectById(gCurrentMove, gBattleStruct->additionalEffectsCounter);
         u32 fractionActivate = CalcSecondaryEffectChance(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), additionalEffect);
-        if (battlerAbility != ABILITY_INNER_FOCUS)
+        if (battlerAbility != ABILITY_INNER_FOCUS /*&& !(IsBitingMove(gCurrentMove) && battlerAbility == THICK_SKIN*/)
         {
             if(gBattleMons[gEffectBattler].neweffect.flinchCounter + fractionActivate >= 60)
             {
@@ -7536,7 +7536,7 @@ static void Cmd_moveend(void)
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_BITING:
-            if ((moveEffect == EFFECT_BITING || IsBitingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.bittenEffect == 0 && IsBattlerTurnDamaged(gBattlerTarget))
+            if ((moveEffect == EFFECT_BITING || IsBitingMove(gCurrentMove)) && gBattleMons[gBattlerTarget].neweffect.bittenEffect == 0 && IsBattlerTurnDamaged(gBattlerTarget) && !IsAbilityAndRecord(gBattlerTarget,GetBattlerAbility(gBattlerTarget),ABILITY_THICK_SKIN))
             {
                 gBattleMons[gBattlerTarget].neweffect.bittenEffect = BITTEN_BY(gBattlerAttacker);
                 if (IsBattlerAlive(gBattlerTarget))

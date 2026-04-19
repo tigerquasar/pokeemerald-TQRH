@@ -8514,7 +8514,7 @@ static inline uq4_12_t GetAttackerAbilitiesModifier(u32 battlerAtk, uq4_12_t typ
     return UQ_4_12(1.0);
 }
 
-static inline uq4_12_t GetDefenderAbilitiesModifier(struct DamageContext *ctx)
+static inline uq4_12_t GetDefenderAbilitiesModifier(struct DamageContext *ctx, bool32 isCrit)
 {
     bool32 recordAbility = FALSE;
     uq4_12_t modifier = UQ_4_12(1.0);
@@ -8578,6 +8578,22 @@ static inline uq4_12_t GetDefenderAbilitiesModifier(struct DamageContext *ctx)
         }
     case ABILITY_METAL_ARMOR:
         if(IsSlicingMove(ctx->move) || IsClawMove(ctx->move))
+        {
+            modifier = UQ_4_12(0.5);
+            recordAbility = TRUE;
+        }
+    case ABILITY_THICK_SKIN:
+        if(isCrit && IsBitingMove(ctx->move))
+        {
+            modifier = UQ_4_12(0.445);
+            recordAbility = TRUE;
+        }
+        else if(isCrit)
+        {
+            modifier = UQ_4_12(0.889);
+            recordAbility = TRUE;
+        }
+        else if(IsBitingMove(ctx->move))
         {
             modifier = UQ_4_12(0.5);
             recordAbility = TRUE;
@@ -8682,14 +8698,14 @@ static inline uq4_12_t GetOtherModifiers(struct DamageContext *ctx)
     if (unmodifiedAttackerSpeed >= unmodifiedDefenderSpeed)
     {
         DAMAGE_MULTIPLY_MODIFIER(GetAttackerAbilitiesModifier(ctx->battlerAtk, ctx->typeEffectivenessModifier, ctx->isCrit, ctx->abilityAtk));
-        DAMAGE_MULTIPLY_MODIFIER(GetDefenderAbilitiesModifier(ctx));
+        DAMAGE_MULTIPLY_MODIFIER(GetDefenderAbilitiesModifier(ctx, ctx->isCrit));
         DAMAGE_MULTIPLY_MODIFIER(GetDefenderPartnerAbilitiesModifier(battlerDefPartner));
         DAMAGE_MULTIPLY_MODIFIER(GetAttackerItemsModifier(ctx->battlerAtk, ctx->typeEffectivenessModifier, ctx->holdEffectAtk));
         DAMAGE_MULTIPLY_MODIFIER(GetDefenderItemsModifier(ctx));
     }
     else
     {
-        DAMAGE_MULTIPLY_MODIFIER(GetDefenderAbilitiesModifier(ctx));
+        DAMAGE_MULTIPLY_MODIFIER(GetDefenderAbilitiesModifier(ctx, ctx->isCrit));
         DAMAGE_MULTIPLY_MODIFIER(GetDefenderPartnerAbilitiesModifier(battlerDefPartner));
         DAMAGE_MULTIPLY_MODIFIER(GetAttackerAbilitiesModifier(ctx->battlerAtk, ctx->typeEffectivenessModifier, ctx->isCrit, ctx->abilityAtk));
         DAMAGE_MULTIPLY_MODIFIER(GetDefenderItemsModifier(ctx));
