@@ -5107,6 +5107,19 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, u32 battler, enum Ability ab
                 effect++;
             }
             break;
+        case ABILITY_METAL_ARMOR:
+            if (IsBattlerAlive(gBattlerAttacker)
+             && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+             && IsBattlerTurnDamaged(gBattlerTarget)
+             && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, GetBattlerAbility(gBattlerAttacker), GetBattlerHoldEffect(gBattlerAttacker), move)
+             && (IsSlicingMove(move) || IsClawMove(move)))
+            {
+                SetPassiveDamageAmount(gBattlerAttacker, GetNonDynamaxMaxHP(gBattlerAttacker) / (B_ROUGH_SKIN_DMG >= GEN_4 ? 8 : 16));
+                PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
+                BattleScriptCall(BattleScript_RoughSkinActivates);
+                effect++;
+            }
+            break;
         case ABILITY_AFTERMATH:
             if (!(gBattleStruct->moveResultFlags[gBattlerTarget] & MOVE_RESULT_NO_EFFECT)
              && !IsBattlerAlive(gBattlerTarget)
@@ -8543,8 +8556,14 @@ static inline uq4_12_t GetDefenderAbilitiesModifier(struct DamageContext *ctx)
             modifier = UQ_4_12(0.5);
             recordAbility = TRUE;
         }
-    case ABILITY_DUELLIST:
+    case ABILITY_DUELIST:
         if(IsSlicingMove(ctx->move))
+        {
+            modifier = UQ_4_12(0.5);
+            recordAbility = TRUE;
+        }
+    case ABILITY_METAL_ARMOR:
+        if(IsSlicingMove(ctx->move) || IsClawMove(ctx->move))
         {
             modifier = UQ_4_12(0.5);
             recordAbility = TRUE;
