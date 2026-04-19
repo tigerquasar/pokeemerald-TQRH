@@ -7553,6 +7553,16 @@ BattleScript_GooeyActivates::
 BattleScript_GooeyActivatesRet:
 	return
 
+BattleScript_SwordBreakerActivates::
+	statbuffchange BS_ATTACKER, STAT_CHANGE_ONLY_CHECKING, BattleScript_SwordBreakerActivatesRet
+	waitstate
+	call BattleScript_AbilityPopUp
+	swapattackerwithtarget  @ for defiant, mirror armor
+	seteffectsecondary BS_ATTACKER, BS_TARGET, MOVE_EFFECT_ATK_MINUS_2
+	swapattackerwithtarget
+BattleScript_SwordBreakerActivatesRet:
+	return
+
 BattleScript_AbilityStatusEffect::
 	waitstate
 	call BattleScript_AbilityPopUp
