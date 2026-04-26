@@ -206,6 +206,7 @@ const u8 *const gBattleStringsTable[STRINGID_COUNT] =
     [STRINGID_PKMNALREADYPOISONED]                  = COMPOUND_STRING("{B_DEF_NAME_WITH_PREFIX} is already poisoned!"),
     [STRINGID_PKMNBADLYPOISONED]                    = COMPOUND_STRING("{B_EFF_NAME_WITH_PREFIX} was badly poisoned!"),
     [STRINGID_PKMNENERGYDRAINED]                    = COMPOUND_STRING("{B_DEF_NAME_WITH_PREFIX} had its energy drained!"),
+    [STRINGID_PKMNENERGYRESTOREDBYPOWDER]           = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX} restored its own HP!"),
     [STRINGID_PKMNWASBURNED]                        = COMPOUND_STRING("{B_EFF_NAME_WITH_PREFIX} was burned!"),
     [STRINGID_PKMNBURNEDBY]                         = COMPOUND_STRING("{B_SCR_NAME_WITH_PREFIX}'s {B_BUFF1} burned {B_EFF_NAME_WITH_PREFIX2}!"), //not in gen 5+, ability popup
     [STRINGID_PKMNHURTBYBURN]                       = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX} was hurt by its burn!"),
@@ -1207,7 +1208,8 @@ const u16 gAttractUsedStringIds[] =
 const u16 gAbsorbDrainStringIds[] =
 {
     [B_MSG_ABSORB]      = STRINGID_PKMNENERGYDRAINED,
-    [B_MSG_ABSORB_OOZE] = STRINGID_ITSUCKEDLIQUIDOOZE
+    [B_MSG_ABSORB_OOZE] = STRINGID_ITSUCKEDLIQUIDOOZE,
+    [B_MSG_ABSORB_POWDER] = STRINGID_PKMNENERGYRESTOREDBYPOWDER,
 };
 
 const u16 gSportsUsedStringIds[] =

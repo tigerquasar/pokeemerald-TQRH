@@ -6683,12 +6683,12 @@ static void Cmd_moveend(void)
             break;
         case MOVEEND_ABSORB:
             if (gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE
-             || !IsBattlerTurnDamaged(gBattlerTarget))
+             /*|| !IsBattlerTurnDamaged(gBattlerTarget)*/)
             {
                 gBattleScripting.moveendState++;
                 break;
             }
-            switch (moveEffect)
+            /*switch (moveEffect)
             {
             case EFFECT_ABSORB:
             case EFFECT_DREAM_EATER:
@@ -6720,6 +6720,48 @@ static void Cmd_moveend(void)
                 break;
             default:
                 break;
+            }*/
+            if (IsBattlerTurnDamaged(gBattlerTarget))
+            {
+                if (moveEffect == EFFECT_ABSORB || moveEffect == EFFECT_DREAM_EATER)
+                {
+                    if (!gBattleMons[gBattlerAttacker].volatiles.healBlock
+                         && gBattleStruct->moveDamage[gBattlerTarget] > 0
+                         && IsBattlerAlive(gBattlerAttacker))
+                    {
+                        s32 healAmount = (gBattleStruct->moveDamage[gBattlerTarget] * GetMoveAbsorbPercentage(gCurrentMove) / 100);
+                        healAmount = GetDrainedBigRootHp(gBattlerAttacker, healAmount);
+                        effect = TRUE;
+                        if ((moveEffect == EFFECT_DREAM_EATER && GetConfig(CONFIG_DREAM_EATER_LIQUID_OOZE) < GEN_5)
+                            || GetBattlerAbility(gBattlerTarget) != ABILITY_LIQUID_OOZE)
+                        {
+                            SetHealAmount(gBattlerAttacker, healAmount);
+                            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ABSORB;
+                            BattleScriptCall(BattleScript_EffectAbsorb);
+                        }
+                        else // Liquid Ooze damage
+                        {
+                            SetPassiveDamageAmount(gBattlerAttacker, healAmount);
+                            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ABSORB_OOZE;
+                            BattleScriptCall(BattleScript_EffectAbsorbLiquidOoze);
+                        }
+                    }
+                }
+                else if (moveEffect == EFFECT_FINAL_GAMBIT)
+                {
+                    BattleScriptCall(BattleScript_FinalGambit);
+                    effect = TRUE;
+                }
+            }
+            if (GetBattlerAbility(gBattlerAttacker) == ABILITY_REGENPOWDER 
+                && IsPowderMove(gCurrentMove) 
+                && IsBattlerAlive(gBattlerAttacker)  
+                && IsAffectedByPowderMove( gBattlerTarget,GetBattlerAbility(gBattlerTarget),GetBattlerHoldEffect(gBattlerTarget) )
+                )
+            {
+                SetHealAmount(gBattlerAttacker, gBattleMons[gBattlerAttacker].maxHP/8);
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ABSORB_POWDER;
+                BattleScriptCall(BattleScript_EffectAbsorb);
             }
             gBattleScripting.moveendState++;
             break;
