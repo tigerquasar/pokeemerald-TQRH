@@ -3488,6 +3488,10 @@ bool32 CanAbilityBlockMove(u32 battlerAtk, u32 battlerDef, enum Ability abilityA
         if (IsBallisticMove(move))
             battleScriptBlocksMove = BattleScript_SoundproofProtected;
         break;
+    case ABILITY_AURA_WALL:
+        if (IsPulseMove(move))
+            battleScriptBlocksMove = BattleScript_SoundproofProtected;
+        break;
     case ABILITY_GOOD_AS_GOLD:
         if (IsBattleMoveStatus(move))
         {
