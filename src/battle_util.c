@@ -379,7 +379,8 @@ bool32 IsAffectedByFollowMe(u32 battlerAtk, u32 defSide, u32 move)
         || effect == EFFECT_SNIPE_SHOT
         || effect == EFFECT_SKY_DROP
         || IsAbilityAndRecord(battlerAtk, ability, ABILITY_PROPELLER_TAIL)
-        || IsAbilityAndRecord(battlerAtk, ability, ABILITY_STALWART))
+        || IsAbilityAndRecord(battlerAtk, ability, ABILITY_STALWART)
+        || (IsAbilityAndRecord(battlerAtk, ability, ABILITY_CANNON) && IsBallisticMove(move)))
         return FALSE;
 
     if (effect == EFFECT_PURSUIT && IsPursuitTargetSet())
@@ -428,7 +429,8 @@ bool32 HandleMoveTargetRedirection(void)
                 && moveEffect != EFFECT_SNIPE_SHOT
                 && moveEffect != EFFECT_PLEDGE
                 && !IsAbilityAndRecord(gBattlerAttacker, abilityAtk, ABILITY_PROPELLER_TAIL)
-                && !IsAbilityAndRecord(gBattlerAttacker, abilityAtk, ABILITY_STALWART))
+                && !IsAbilityAndRecord(gBattlerAttacker, abilityAtk, ABILITY_STALWART)
+                && !(IsAbilityAndRecord(gBattlerAttacker, abilityAtk, ABILITY_CANNON) && IsBallisticMove(gCurrentMove)))
             {
                 redirectorOrderNum = GetBattlerTurnOrderNum(battler);
             }
@@ -7675,6 +7677,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
     case ABILITY_DUELIST:
         if(IsSlicingMove(move))
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
+        break;
+    case ABILITY_CANNON:
+        if (IsBallisticMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
     default:
         break;
