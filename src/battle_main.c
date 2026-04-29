@@ -4766,10 +4766,14 @@ void SwapTurnOrder(u8 id1, u8 id2)
 u32 GetBattlerTotalSpeedStat(u32 battler, enum Ability ability, enum HoldEffect holdEffect)
 {
     u32 speed = gBattleMons[battler].speed;
-
+    u32 speedStatStage = gBattleMons[battler].statStages[STAT_SPEED];
+    if (ability == ABILITY_MUSCULAR_LEG && speedStatStage < DEFAULT_STAT_STAGE)
+    {
+        speedStatStage +=1;
+    }
     // stat stages
-    speed *= gStatStageRatios[gBattleMons[battler].statStages[STAT_SPEED]][0];
-    speed /= gStatStageRatios[gBattleMons[battler].statStages[STAT_SPEED]][1];
+    speed *= gStatStageRatios[speedStatStage][0];
+    speed /= gStatStageRatios[speedStatStage][1];
 
     // weather abilities
     if (HasWeatherEffect())
@@ -4821,7 +4825,7 @@ u32 GetBattlerTotalSpeedStat(u32 battler, enum Ability ability, enum HoldEffect 
         speed *= 2;
 
     // paralysis drop
-    if (gBattleMons[battler].status1 & STATUS1_PARALYSIS && ability != ABILITY_QUICK_FEET)
+    if (gBattleMons[battler].status1 & STATUS1_PARALYSIS && /*(*/ability != ABILITY_QUICK_FEET /*&& ability != ABILITY_MUSCULAR_LEG)*/)
         speed /= GetConfig(CONFIG_PARALYSIS_SPEED) >= GEN_7 ? 2 : 4;
 
     if (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_SWAMP)

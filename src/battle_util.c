@@ -7686,6 +7686,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageContext *ctx)
         if (IsBallisticMove(move))
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
+    case ABILITY_MUSCULAR_LEG:
+        if (IsKickingMove(move))
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.2));
+        break;
     default:
         break;
     }
@@ -11238,6 +11242,11 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, enum Ability atkA
         if (IsBattleMovePhysical(move))
             calc = (calc * 80) / 100; // 1.2 hustle loss
         break;
+    case ABILITY_MUSCULAR_LEG:
+        if (IsKickingMove(move))
+            calc = 100;
+            return calc;
+            break;
     default:
         break;
     }
